@@ -1,0 +1,181 @@
+
+
+
+<!doctype html>
+
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>RPidle Reborn</title>
+     <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+     <canvas id="canvas1"></canvas>
+
+
+
+     </body>
+     
+     </html>
+     <script>
+             
+
+
+     
+             
+
+             var canvas = document.getElementById('canvas1'),
+                    context = canvas.getContext('2d');
+               canvas.width = 1280
+               canvas.height = 720
+
+     /*
+     let particleArray = []
+     class Particle{
+          constructor(x, y) {
+               this.x = x;
+               this.y = y;
+               this.size = Math.random()*10
+               this.weight = 2;///how fast they fall and bounce
+               this.directionX = -1
+          }
+          update(){
+               this.weight+=0.01;
+               this.y += this.weight;
+               this.x += this.directionX;
+          }    
+          draw(ctx) {
+               ctx.fillStyle = 'red'
+               ctx.beginPath()
+               ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+               ctx.fillStyle = "orange"
+               ctx.closePath()
+               ctx.fill()
+          }
+
+     }
+     */
+
+
+
+     class spriteParticle {
+          constructor(x, y, size, angle) {
+               this.size = size
+               this.x = x;
+               this.y = y;
+
+               this.weight = -8 + (Math.random()*1)+1
+               this.directionX = (Math.random() * 3) - 1.5
+               //var angle = Math.random()*360
+               this.dx = Math.sin(angle)
+               this.dy = Math.cos(angle)
+               this.index = 0
+               this.indexChange = 0.02
+               this.alpha = 1.0
+          }
+          update() {
+               /*
+               this.dx*=1.025
+               this.dy*=1.025
+               this.y -= (this.weight + this.dx)  
+               this.x += (this.dy) 
+               if (this.size >= 0.05) { this.size -= 0.4 }
+               */
+
+               this.weight+=0.2
+               this.y+=this.weight;
+               this.x+=this.directionX;
+                              
+               if (this.size >= 0.05) { this.size -= 0.4 }
+
+          }
+          draw(ctx) {
+               this.index += this.indexChange
+               this.indexChange+=0.0025
+          
+               var color = 'ffffff'
+               if(this.index < 1){
+                    color = this.lerpColor('#ffffff', '#FFA500', Math.min(this.index, 1.0))
+               }else if(this.index >= 1 && this.index < 2){
+                    color = this.lerpColor('#FFA500', '#ff0000', Math.min(this.index - 1.0, 1.0))
+               }else{
+                    this.alpha = Math.max(0, this.alpha - 0.05)
+                    color = this.lerpColor("#ff0000", "#555555", Math.min(this.index - 2.0, 1.0))
+               }
+               ctx.fillStyle = color
+               ctx.fillRect(this.x, this.y, this.size, this.size)
+               /*
+               ctx.beginPath()
+               ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+               ctx.fillStyle = "orange"
+               ctx.fill()
+               */
+          }
+          lerpColor(a, b, amount) {
+
+               var ah = parseInt(a.replace(/#/g, ''), 16),
+                    ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+                    bh = parseInt(b.replace(/#/g, ''), 16),
+                    br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+                    rr = ar + amount * (br - ar),
+                    rg = ag + amount * (bg - ag),
+                    rb = ab + amount * (bb - ab);
+
+               return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+          }
+     }
+
+     class spriteParticleManager {
+          constructor(x, y) {
+               this.x = x;
+               this.y = y;
+               this.particles = []
+               this.hidden = false
+
+               var cI = 0
+               for (let i = 0; i < 180; i++) {
+                    this.particles.push(new spriteParticle(x, y, Math.random() * 50, cI))
+                    cI = 2.1 + (i * Math.PI / 90)
+               }
+
+          }
+          update() {
+               if (this.hidden === false) {
+                    for (let i = 0; i < this.particles.length; i++) {
+                         this.particles[i].update()
+                         if (this.particles[i].size <= 25) {
+                              this.particles.splice(i, 1)
+                              i--
+                         }
+                    }
+               }
+          }
+          draw(ctx) {
+               if (this.hidden === false) {
+                    for (let i = 0; i < this.particles.length; i++) {
+                         ctx.globalAlpha = this.particles[i].alpha
+                         this.particles[i].draw(ctx)
+                    }
+                    ctx.globalAlpha = 1.0
+               }
+          }
+     }
+
+
+var particles = new spriteParticleManager(1024/2, 768/2)
+
+
+
+function animate() {
+     context.clearRect(0, 0, canvas.width, canvas.height)
+     particles.update()
+     particles.draw(context)
+     requestAnimationFrame(animate)
+}
+requestAnimationFrame(animate)
+
+
+</script>

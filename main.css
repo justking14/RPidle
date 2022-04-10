@@ -1,0 +1,37 @@
+*{
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     background: gray;
+}
+#canvas1 {
+     border: 2px solid white;
+     position: absolute;
+     width: 1280px;
+     height: 720px;
+
+     image-rendering: -moz-crisp-edges;
+     image-rendering: -webkit-crisp-edges;
+     image-rendering: pixelated;
+     image-rendering: crisp-edges;
+}
+
+
+#loading{
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  z-index: 100;
+  width: 300px;
+  height: 300px;
+  background-repeat:repeat;
+  background-position: center;
+  text-align: center;
+  font-size: 100px;
+}
+
+@font-face {
+    font-family: 'Adventure';
+    src: url('adventureFont.ttf');
+}
