@@ -1,19 +1,15 @@
 function drawText(ctx, text, x, y, color, selected, fnt) {
      ctx.font = fnt + 'px Adventure';
-
      var startX = x 
      var startY = y
      var yIncrement = 0
      var lineHeight = fnt * 1.286;
 
-
      if (selected === false || selected === undefined) {
           ctx.fillColor = color
           ctx.fillStyle = color
 
-          console.log(text)
           if (typeof text === 'string' || text instanceof String) {
-
                var words = text.split(' ');
                for (var i = 0; i < words.length; i++) {
                     if (x + ctx.measureText(words[i] + "  ").width > 1200) {
@@ -28,6 +24,7 @@ function drawText(ctx, text, x, y, color, selected, fnt) {
           }
 
      } else {
+          //if selected, give it a black background 
           ctx.fillColor = "black"
           ctx.fillStyle = "black"
                     

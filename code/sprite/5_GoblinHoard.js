@@ -27,7 +27,6 @@ class goblinManager extends AgentManager {
 
      placeChildren(size) {
           if (size === undefined) {
-
                this.agents[0].setPosition(this.body.pos.x + 5, this.body.pos.y + 30)
                this.agents[1].setPosition(this.body.pos.x + 35, this.body.pos.y + 30)
                this.agents[2].setPosition(this.body.pos.x + 20, this.body.pos.y )
@@ -40,14 +39,11 @@ class goblinManager extends AgentManager {
           this.agents[1].resetReset()
           this.agents[2].resetReset()
      }
- 
-
-
 
      reset() {
           this.heal(99999)
      }
-        enterCombat() {
+     enterCombat() {
           this.resetReset()
           this.placeChildren("big")
           this.setBigSprite()

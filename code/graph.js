@@ -240,6 +240,8 @@ class Tile {
                this.spriteNoon = new SpriteBuilder().setBody(new BodyBuilder().setXY(x, y).setSize(width, height).build()).setName(name + "Noon").build()
                this.spriteNight = new SpriteBuilder().setBody(new BodyBuilder().setXY(x, y).setSize(width, height).build()).setName(name + "Night").build()
           }
+          this.x = x 
+          this.y = y
 
           this.pos = new Vector(x,y)
           this.xCoord = x;
@@ -383,47 +385,6 @@ class Tile {
                          this.sprite.draw(ctx)
                     }
                     ctx.globalAlpha = 1.0
-                    /*
-                    if (dayValue <= 1) {
-                         ctx.globalAlpha = 1.0 - dayValue
-                         this.sprite.draw(ctx)
-                         ctx.globalAlpha = dayValue
-                         this.spriteNoon.draw(ctx)
-
-                    } else if (dayValue > 1 && dayValue <= 4) {
-                         this.spriteNoon.draw(ctx)
-                    } else if (dayValue > 4 && dayValue <= 5) {
-                         ctx.globalAlpha = 5.0 - dayValue
-                         this.spriteNoon.draw(ctx)
-                         ctx.globalAlpha = 0.25 + (dayValue - 4.0)
-                         this.spriteNight.draw(ctx)
-                    } else if (dayValue > 5 && dayValue <= 7) {
-                         this.spriteNight.draw(ctx)
-
-                    } else if (dayValue > 7 && dayValue <= 8) {
-                         ctx.globalAlpha = 8.0 - dayValue
-                         this.spriteNight.draw(ctx)
-                         ctx.globalAlpha = 0.25 + (dayValue - 7.0)
-                         this.spriteNoon.draw(ctx)
-                    } else if (dayValue > 8 && dayValue <= 10) {
-                         this.spriteNoon.draw(ctx)
-                    
-                    } else if (dayValue > 10 && dayValue <= 11) {
-                         ctx.globalAlpha = 11.0 - dayValue
-                         this.spriteNoon.draw(ctx)
-                         ctx.globalAlpha = 0.25 + (dayValue - 10.0)
-                         this.sprite.draw(ctx)
-                    
-
-                    
-
-
-
-                    } else {
-                         this.spriteNight.draw(ctx)
-                    }
-
-                    */
                } else {
                     this.sprite.draw(ctx)
                }

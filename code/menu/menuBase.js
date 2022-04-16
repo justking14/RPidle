@@ -10,14 +10,10 @@ class menuBase {
           this.items = []
           this.ranOnce = false
           this.addItems()
-
      }
-     addItems() {
-     }
-     advance(event) {
-     }
-     update() {
-     }
+     addItems() {}
+     advance(event) {}
+     update() { }
      draw(ctx) {
           this.infoBody.draw(ctx)
           this.body.draw(ctx)

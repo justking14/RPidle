@@ -23,12 +23,6 @@ function rounded_rect(ctx,left,top, width, height, radius, fill){
      ctx.closePath()
 }
 
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
      if (typeof stroke === 'undefined') {
           stroke = true;
@@ -78,20 +72,10 @@ function longestLength(ctx, arr) {
      return longest 
 }
 
-function createGradient(ctx, rct, arr) {
-     //console.log("Check ", rct)
-     var gradient = ctx.createLinearGradient(rct.pos.x + rct.width, rct.pos.y, rct.pos.x + rct.width, rct.pos.y + rct.height);
-     for (var i = 0; i < arr.length; i++){
-          gradient.addColorStop(arr[i][0], arr[i][1])
-     }
-     return gradient
-}
 
 
 
-function numberBoundary(min, max) {
-     return Math.min(Math.max(this, min), max);
-};
+
 
 function getPixelRatio(context) {
      console.log('Determining pixel ratio.');
@@ -141,34 +125,6 @@ function generateCanvas(w, h) {
 }
 
 
-class Vector {
-     constructor(x, y) {
-          this.x = x;
-          this.y = y;
-     }
-     clone() {
-          return new Vector(this.x, this.y)
-     }
-     lerp(targetPosition, ratio) {
-          var ratio = ratio || 0.2
-          // update position by 20% of the distance between position and target position
-          var tmp = this.clone()
-          tmp.x += (targetPosition.x - this.x) * ratio;
-          tmp.y += (targetPosition.y - this.y) * ratio;
-          return tmp
-     }
-     distance(other) {
-          return Math.sqrt(Math.pow(other.x - this.x, 2) +
-                Math.pow(other.y - this.y, 2) * 1.0);
-     }
-     equals(other) {
-          if (this.x === other.x && this.y === other.y) {
-               return true 
-          }
-          return false
-     }
-
-}
 
 
 

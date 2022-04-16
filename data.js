@@ -114,6 +114,17 @@ var menu_data = {
      "options": {
           items: [
                {
+                    id: "Top",
+                    key: "top",
+                    title: "Automation Menu",
+                    options: [],
+                    description: "A menu that allows you to automate parts of the game play experience",
+                    type: "title",
+                                        
+                    menuType: "top",
+                    subMenu: "top"
+               },
+               {
                     id: "FullAutomation",
                     key: "full",
                     title: "Full Automation",
@@ -274,7 +285,6 @@ Off-time cookies. Text save. Time since last save
 Battle won in the center not the UI. 
 
 HAND MADE WITH HIGH CONTRAST. 
-changing settings should take affect 
 Narrative. Building things up. 
 Attending to the absurd 
 Must be surprise but not too much. Needs expectations. Start simple. Automating things 
@@ -315,3 +325,5 @@ Gold can buy territory. Become a lord. Negotiate with neighbors. Random events.
 //Fix map tiles on the bottom 
 //day/night cycle
 //add seperate reticule for each player manager
+//changing settings should take affect 
+//

@@ -14,6 +14,7 @@ class storeState extends State {
      onEnter(scope) {
           console.log("Entered store")
 
+          scope.textBoxManager.start("shopText")
           this.storeUI = new storeMenu("store")
           this.eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
      }
@@ -25,13 +26,11 @@ class storeState extends State {
      }
      dealWithInteraction(scope, event) {
           if (JSON.stringify(event) === '{}') {
-               
           } else {
                if (event.Enter === true) {
                     delete event.Enter
                     if (this.storeUI.items[this.storeUI.index].name === "Escape") {
                          this.eventKeeper.addEvent({ name: "Transition", timeToTrigger: 1.0, type: "map" })
-                    
                     } else {
                          this.storeUI.makePurchase()
                     }

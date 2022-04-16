@@ -1,24 +1,13 @@
 class State {
      constructor(name) { this.name = name; }
-     update() {
-     }
-     draw() {
-     }
-     onEnter() {
-     }
-     onExit() {
-     }
-     dealWithInteraction() {
-     }
-     miniDraw() {
-          
-     }
-
-     menuChange() {
-          
-     }
+     update() {}
+     draw() {}
+     onEnter() {}
+     onExit() {}
+     dealWithInteraction() {}
+     miniDraw() {}
+     menuChange() {}
 }
-
 class stateManager{
      constructor(stateArrays) {
           this.states = new Map()
@@ -35,6 +24,8 @@ class stateManager{
                this.currentState.onEnter(scope)
           }
      }
+     draw(ctx, state) {
+          this.currentState.draw(ctx, state)
+          this.currentState.miniDraw(ctx, state)
+     }
 }
-
-

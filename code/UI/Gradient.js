@@ -84,4 +84,13 @@ class Color {
      }
 }
 var colorOrange = new Color(192, 57, 43)//pom
-var colorBrown  = new Color(231, 76, 60)
+var colorBrown = new Color(231, 76, 60)
+
+function createGradient(ctx, rct, arr) {
+     //console.log("Check ", rct)
+     var gradient = ctx.createLinearGradient(rct.pos.x + rct.width, rct.pos.y, rct.pos.x + rct.width, rct.pos.y + rct.height);
+     for (var i = 0; i < arr.length; i++){
+          gradient.addColorStop(arr[i][0], arr[i][1])
+     }
+     return gradient
+}

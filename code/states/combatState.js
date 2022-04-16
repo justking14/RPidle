@@ -5,7 +5,6 @@ class battleState extends State{
           this.innerStates = ["playerChoose", "playerPicked", "playerAttack", "playerDamage", "enemyChoose", "enemyAttack", "enemyDamage"]
           this.innerState = this.innerStates[0]
           
-
           this.attackUI = new UIBuilder([["Attack"], ["Magic"], ["Escape"]]).setXY(350, 200).setSize("text", "text").setFont(40).makePickable().build()
           this.magicUI = new UIBuilder([["Fire"], ["Water"], ["Thunder"]]).setXY(350, 200).setSize("text", "text").setFont(40).setParent(this.attackUI).makeHidden().makePickable().build()
           this.magicUI.addGradient("Fire")
@@ -37,7 +36,6 @@ class battleState extends State{
           } else if (event === "left") {
                this.magicUI.hidden = true
           }
-          
      }
 }
 
@@ -59,78 +57,57 @@ class combatState extends State {
 
           this.bgGradient = new Gradient("Magic")
           this.bgGradient.step_u = 0.001
-
-     
      }
+
      draw(ctx, scope) {
           //console.log(window.game.state, scope)
           var scope = window.game.state 
 
-
-
-
-
-          if (scope.hasOwnProperty('entities')) {
-               for (var i = 0; i < 20; i++){
-                    for (var j = 0; j < 15; j++){
-                         ctx.drawImage(this.img, i * 50, j * 50)
-                    }
+          for (var i = 0; i < 20; i++){
+               for (var j = 0; j < 15; j++){
+                    ctx.drawImage(this.img, i * 50, j * 50)
                }
-               ctx.fillStyle = this.bgGradient.draw(ctx)
-               ctx.fillRect(0, 0, window.game.constants.width, window.game.constants.height)
+          }
+          ctx.fillStyle = this.bgGradient.draw(ctx)
+          ctx.fillRect(0, 0, window.game.constants.width, window.game.constants.height)
 
-               if (this.battleState.innerState === "playerChoose" || this.battleState.innerState === "playerPicked") {
-                    scope.agents.players.setAttacker()
-                    var attacker = scope.agents.players.attacker
-                    console.log(attacker)
-                    if (attacker !== null) {
-                           ctx.fillColor = "black"
-                         ctx.fillStyle = "black"
-                         ctx.strokeStyle = "black"
+          if (this.battleState.innerState === "playerChoose" || this.battleState.innerState === "playerPicked") {
+               scope.agents.players.setAttacker()
+               var attacker = scope.agents.players.attacker
+               console.log(attacker)
+               if (attacker !== null) {
+                    ctx.fillColor = "black"
+                    ctx.fillStyle = "black"
+                    ctx.strokeStyle = "black"
 
-                         var sprites = attacker.biggerSprite.body.pos
-                         console.log(sprites)
-                         ctx.beginPath();
-                         ctx.rect(sprites.x, sprites.y, 80, 80)
-                         ctx.stroke();
-                    }
+                    var sprites = attacker.biggerSprite.body.pos
+                    console.log(sprites)
+                    ctx.beginPath();
+                    ctx.rect(sprites.x, sprites.y, 80, 80)
+                    ctx.stroke();
                }
-
-     
-               var entities = scope.entities;
-               for (var entity in entities) {
-                    if (entity !== "map") {
-                         entities[entity].draw(ctx);
-                    }
-               }
-               if (scope.hasOwnProperty('agents')) {
-                    //for (var i = 0; i < scope.agents.goblins.length; i++) {
-                    scope.agents.goblins[0].draw(ctx, "big");
-                    //}
-                    scope.agents.players.draw(ctx, "big")
-
-                    //for (var i = 0; i < scope.agents.goblins.length; i++) {
-                         scope.agents.goblins[0].drawParticles(ctx)
-                    //}
-                    scope.agents.players.drawParticles(ctx)
-
-
-                    var entities = scope.agents;
-                    for (var entity in entities) {
-                         if (entities[entity].amMercenary === false) {
-                              entities[entity].draw(ctx, "big");
-                         } 
-                    }
-                    for (var entity in entities) {
-                         if (entities[entity].amMercenary === false) {
-                              entities[entity].drawParticles(ctx)
-                         } 
-                    }
-               }
-               //for (var entity in scope.agents) { scope.agents[entity].draw(ctx, "big")   }
-               //for (var entity in scope.agents) { scope.agents[entity].drawParticles(ctx);     }
           }
 
+          if (scope.hasOwnProperty('agents')) {
+               scope.agents.goblins[0].draw(ctx, "big");
+               scope.agents.players.draw(ctx, "big")
+
+               scope.agents.goblins[0].drawParticles(ctx)
+               scope.agents.players.drawParticles(ctx)
+
+               var agents = scope.agents;
+               for (var entity in agents) {
+                    if (agents[entity].amMercenary === false) {
+                         agents[entity].draw(ctx, "big");
+                    } 
+               }
+               for (var entity in agents) {
+                    if (agents[entity].amMercenary === false) {
+                         agents[entity].drawParticles(ctx)
+                    } 
+               }
+          }
+          
           ctx.fillColor = "blue"
           ctx.fillStyle = "blue"
           this.battleState.draw(ctx)
@@ -141,20 +118,16 @@ class combatState extends State {
      }
      update(scope, ctx) {
           var scope = window.game.state 
+          scope.agents.goblins[0].update()
           
-          var entities = scope.entities;
-
- 
-          //for (var i = 0; i < scope.agents.goblins.length; i++) {
-               scope.agents.goblins[0].update()
-          //}
-          //scope.agents.goblins.update()
           scope.agents.players.update()
           var events = this.eventKeeper.update()
           for (var event in events) { this.dealWithEvent(scope, events[event], ctx) }
      }
      onEnter(scope) {
           console.log("Entered combat", scope)
+
+          scope.textBoxManager.start("battleText")
 
           this.log = [" ", " ", "Entered Battle"]
           this.logUI = new UIBuilder(this.log).setXY(25, -6).setSize(window.game.constants.width - 100, 150).build()
@@ -181,7 +154,7 @@ class combatState extends State {
           scope.agents.players.resetAttackers()
 
           scope.agents.goblins[0].reset()
-          scope.entities.map.start = scope.entities.map.battlefields[0].clone()//.getRandomTarget()
+          scope.map.start = scope.map.battlefields[0].clone()//.getRandomTarget()
      }
 
      playerChoose(scope) {
@@ -202,6 +175,7 @@ class combatState extends State {
           }
      }
 
+     ///moves to magic automatically
      magicAttackStep1(scope) {
           this.battleState.attackUI.index = 1
           this.eventKeeper.addEvent({ name: "magicAttackStep2", timeToTrigger: 0.25})
@@ -362,14 +336,8 @@ class combatState extends State {
           } else if (event.name === "magicAttackStep3") {
                this.magicAttackStep3(scope)
 
-
-
-
           } else if (event.name === "leaveBattle") {
                scope.worldStateManager.transition(scope, "map")  
-
-
-
 
           } else if (event.name === "shake") {
                if (event.count > 0) {

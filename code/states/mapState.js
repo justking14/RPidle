@@ -9,90 +9,74 @@ class mapState extends State{
      draw(ctx) {          
 
           //day/night cycle draws tiles
-               this.counter += 0.0075
-               if (this.counter >= 11.0) {
-                    this.counter = 0
-               }
+          this.counter += 0.0075
+          if (this.counter >= 11.0) {
+               this.counter = 0
+          }
 
-               var scope = window.game.state 
-               if (scope.hasOwnProperty('entities')) {
-                    var entities = scope.entities;
-                    for (var entity in entities) {
-                         entities[entity].draw(ctx, this.counter, scope.agents.mercenaries);
-                         ctx.globalAlpha = 1.0;
-                    }
-               }
-               ctx.globalAlpha = 1.0;
+          var scope = window.game.state 
+          scope.map.draw(ctx, this.counter, scope.agents.mercenaries);
+          ctx.globalAlpha = 1.0
 
           if (scope.hasOwnProperty('agents')) {
-               var entities = scope.agents;
-               for (var entity in entities.goblins) {
-                    entities.goblins[entity].draw(ctx);
+               var agents = scope.agents;
+                         
+               for (var i = 0; i < window.game.state.menuDict["automation"]["mercenaries"]["count"] + 1; i++) {
+                    agents.goblins[i].draw(ctx);
                }
-               entities.players.draw(ctx);
-               entities.players.drawStats(ctx)
+               agents.players.draw(ctx);
+               agents.players.drawStats(ctx)
                
 
                if (scope.menuDict["automation"]["mercenaries"]["count"] !== 0) {
                     for (var i = 0; i < scope.menuDict["automation"]["mercenaries"]["count"]; i++) {
-                         entities.mercenaries[i].draw(ctx)
+                         agents.mercenaries[i].draw(ctx)
 
                          ctx.strokeStyle = 'red';
                          ctx.lineWidth = 5;
 
                          // draw a red line
                          ctx.beginPath();
-                         ctx.moveTo(entities.mercenaries[i].body.pos.x + 30, entities.mercenaries[i].body.pos.y + 30);
-                         ctx.lineTo(entities.mercenaries[i].target.pos.x + 30, entities.mercenaries[i].target.pos.y + 30);
+                         ctx.moveTo(agents.mercenaries[i].body.pos.x + 30, agents.mercenaries[i].body.pos.y + 30);
+                         ctx.lineTo(agents.mercenaries[i].target.pos.x + 30, agents.mercenaries[i].target.pos.y + 30);
                          ctx.stroke();
                     }
                }
           }
           this.logUI.draw(ctx, ["Gold: " + window.game.state.gold, " Time Til Level-Up: " + window.game.state.timeLeft.returnString()])
+          //window.game.state.timeLeft.draw(ctx, " Time Til Level-Up: ")
+          //this.tBox1.draw(ctx)
      }
      miniDraw(ctx) {
-          ctx.scale(0.2,0.2)
+          ctx.scale(0.15,0.15)
 
-                         this.counter += 0.0075
-               if (this.counter >= 11.0) {
-                    this.counter = 0
-               }
-
-               var scope = window.game.state 
-               if (scope.hasOwnProperty('entities')) {
-                    var entities = scope.entities;
-                    for (var entity in entities) {
-                         entities[entity].draw(ctx, this.counter, scope.agents.mercenaries);
-                         ctx.globalAlpha = 1.0;
-                    }
-               }
-               ctx.globalAlpha = 1.0;
+          var scope = window.game.state 
+          scope.map.draw(ctx, this.counter, scope.agents.mercenaries);
+          ctx.globalAlpha = 1.0
 
           if (scope.hasOwnProperty('agents')) {
-               var entities = scope.agents;
-               for (var entity in entities.goblins) {
-                    entities.goblins[entity].draw(ctx);
+               var agents = scope.agents;
+               for (var entity in agents.goblins) {
+                    agents.goblins[entity].draw(ctx);
                }
-               entities.players.draw(ctx);
-               entities.players.drawStats(ctx)
+               agents.players.draw(ctx);
+               //agents.players.drawStats(ctx)
                
-
                if (scope.menuDict["automation"]["mercenaries"]["count"] !== 0) {
-                    for (var entity in entities.mercenaries) {
-                         entities.mercenaries[entity].draw(ctx)
+                    for (var entity in agents.mercenaries) {
+                         agents.mercenaries[entity].draw(ctx)
                     }
                }
           }
-
-
           ctx.setTransform(1, 0, 0, 1, 0, 0);
-
      }
 
 
      update(scope) {
           var events = this.eventKeeper.update()
           for (var event in events) { this.dealWithEvent(scope, events[event]) }
+
+          //this.tBox1.update()
 
           if (scope.menuDict["automation"]["mercenaries"]["count"] !== 0) {
 
@@ -105,8 +89,6 @@ class mapState extends State{
 
      menuChange(type, oldValue) {
           var scope = window.game.state
-
-          console.log(window.game.state.menuDict["automation"]["mercenaries"] )
           if (type === "mercenaries") {
                if (window.game.state.menuDict["automation"]["mercenaries"]["count"] === 0) {
                     
@@ -115,7 +97,7 @@ class mapState extends State{
 
                     for (var i = oldValue; i < window.game.state.menuDict["automation"]["mercenaries"]["count"]; i++) {
                          //scope.agents.mercenaries[i] = new playerManager(0,0,75,75, true) 
-                         scope.agents.mercenaries[i].start = scope.entities.map.inn.clone()
+                         scope.agents.mercenaries[i].start = scope.map.inn.clone()
                          scope.agents.mercenaries[i].setPosition(scope.agents.mercenaries[i].start.pos.x, scope.agents.mercenaries[i].start.pos.y)
                          scope.agents.mercenaries[i].placeChildren()
 
@@ -123,21 +105,22 @@ class mapState extends State{
                          scope.agents.mercenaries[i].pathIndex = 0
 
                          scope.agents.mercenaries[i].targetName = "fightingGoblins"
-                         scope.agents.mercenaries[i].target = scope.entities.map.battlefields[i].clone()
+                         scope.agents.mercenaries[i].target = scope.map.battlefields[i].clone()
                          scope.agents.mercenaries[i].selectedVector = new Vector(0,0)
 
                          scope.agents.goblins[i].isFighting = false
 
-                         scope.agents.mercenaries[i].eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
+                         console.log(scope.agents.mercenaries[i])
+                         scope.agents.mercenaries[i].startPathFinding(scope.map.battlefields[i].returnPosition(), i )
 
-                         
-                         //scope.entities.map.targets[i] = scope.entities.map.battlefields[i].clone()
-                         scope.agents.mercenaries[i].eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.015 + 0.005 * i, target: scope.entities.map.battlefields[i].returnPosition(), index: i })
+                         //scope.agents.mercenaries[i].eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
+
+                         //scope.agents.mercenaries[i].eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.015 + 0.005 * i, target: scope.map.battlefields[i].returnPosition(), index: i })
                     }
                }
-          } else if (type === "travel") {
-               
-               if (scope.menuDict["automation"]["travel"]["active"] === true) {
+          } else if (type === "travel" || type === "fully") {
+               console.log(scope.menuDict["automation"]["travel"])
+               if (scope.menuDict["automation"]["travel"]["active"] === true || scope.menuDict["automation"]["fully"]["active"] === true ) {
                     this.findTarget(scope)
                }
           }
@@ -148,6 +131,7 @@ class mapState extends State{
           scope = window.game.state 
                     
           this.logUI = new UIBuilder(this.log).setXY(25, -6).setSize(window.game.constants.width - 100, 100).build()
+          //this.tBox1 = new TextBoxBuilder().setBody(new BodyBuilder().setXY(25, 500).setSize(window.game.constants.width - 100, 100).build()).setText(["i am the very modle of a modern major general, i've information animeal vegetable and mineral.  i know the kings of england and i quote the fights historical from marathon to waterloo in orders categorical .","sentence 2 of 2 3 4 5 6 7 8 9", "sentence 3 of 3 4 5 6 7 8 9 "]).build()
           //this.firstUI = new UIBuilder([String(scope.agents.players.agents[0].status.name) + ": " + String(scope.agents.players.agents[0].status.currentHealth) + "/" + String(scope.agents.players.agents[0].status.maxHealth), String(scope.agents.players.agents[1].status.name) + ": " + String(scope.agents.players.agents[1].status.currentHealth) + "/" + String(scope.agents.players.agents[1].status.maxHealth), String(scope.agents.players.agents[2].status.name) + ": " + String(scope.agents.players.agents[2].status.currentHealth) + "/" + String(scope.agents.players.agents[2].status.maxHealth)]).setXY(670, 300).setFont(15).setSize("text", "text").build()
 
           //this.menuChange("mercenaries", 0)
@@ -158,26 +142,25 @@ class mapState extends State{
 
                scope.agents.goblins[i] = new goblinManager(500, 400, 75, 75, "Goblin", 1)
 
-               scope.entities.map.battlefields[i] = scope.entities.map.getRandomTarget()
+               scope.map.battlefields[i] = scope.map.getRandomTarget()
           
           }
 
           this.eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
 
-          //scope.agents.players.start = scope.entities.map.inn.clone()
           scope.agents.players.setPosition(scope.agents.players.start.pos.x, scope.agents.players.start.pos.y)
           scope.agents.players.placeChildren()
 
 
           for (var i = 0; i < scope.agents.mercenaries.length; i++) {
-               scope.agents.mercenaries[i].start = scope.entities.map.inn.clone()
+               scope.agents.mercenaries[i].start = scope.map.inn.clone()
                scope.agents.mercenaries[i].setPosition(scope.agents.mercenaries[i].start.pos.x, scope.agents.mercenaries[i].start.pos.y)
                scope.agents.mercenaries[i].placeChildren()
           }
 
-          for (var i = 0; i < scope.entities.map.battlefields.length; i++) {
-               scope.entities.map.battlefields[i] = scope.entities.map.getRandomTarget()
-               scope.agents.goblins[i].setPositionV(scope.entities.map.battlefields[i].returnPosition());
+          for (var i = 0; i < scope.map.battlefields.length; i++) {
+               scope.map.battlefields[i] = scope.map.getRandomTarget()
+               scope.agents.goblins[i].setPositionV(scope.map.battlefields[i].returnPosition());
                scope.agents.goblins[i].placeChildren()
                scope.agents.goblins[i].isFighting = false
           }
@@ -190,15 +173,16 @@ class mapState extends State{
                console.log("MERCENARIES UNLOCKED")
 
                for (var i = 0; i < scope.agents.mercenaries.length; i++) {
+                    /*
                     scope.agents.mercenaries[i].whereAmI = "moving"
                     scope.agents.mercenaries[i].pathIndex = 0
 
                     scope.agents.mercenaries[i].targetName = "fightingGoblins"
-                    scope.agents.mercenaries[i].target = scope.entities.map.battlefields[i].clone()
+                    scope.agents.mercenaries[i].target = scope.map.battlefields[i].clone()
 
-                    
-                    //scope.entities.map.targets[i] = scope.entities.map.battlefields[i].clone()
-                     scope.agents.mercenaries[i].eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.015 + 0.005 * i, parent: "mercenary", target: scope.entities.map.battlefields[i].returnPosition(), index: i })
+                     scope.agents.mercenaries[i].eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.015 + 0.005 * i, parent: "mercenary", target: scope.map.battlefields[i].returnPosition(), index: i })
+                    */
+                                             scope.agents.mercenaries[i].startPathFinding(scope.map.battlefields[i].returnPosition(), i )
 
                }
         
@@ -210,12 +194,12 @@ class mapState extends State{
 
                if (scope.agents.players.agents[0].status.currentHealth <= 0) {
                     scope.agents.players.targetName = "Healing"
-                    scope.entities.map.target = scope.entities.map.inn.clone()
-                    this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.05, parent: "player", target: scope.entities.map.inn.returnPosition() })
+                    scope.map.target = scope.map.inn.clone()
+                    this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.05, parent: "player", target: scope.map.inn.returnPosition() })
                } else {
                     scope.agents.players.targetName = "fightingGoblins"
-                    scope.entities.map.target = scope.entities.map.battlefields[0].clone()
-                    this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.05, parent: "player", target: scope.entities.map.battlefields[0].returnPosition() })
+                    scope.map.target = scope.map.battlefields[0].clone()
+                    this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.05, parent: "player", target: scope.map.battlefields[0].returnPosition() })
                }
           }  
      }
@@ -226,16 +210,16 @@ class mapState extends State{
                var pos = event.target
                var index = event.index
                if (event.parent === "player") {
-                    if (scope.entities.map.selectedX < pos.x / 60) {
-                         scope.entities.map.selectedX += 1
-                    } else if (scope.entities.map.selectedX > pos.x / 60) {
-                         scope.entities.map.selectedX -= 1
-                    } else if (scope.entities.map.selectedY < pos.y / 60) {
-                         scope.entities.map.selectedY += 1
-                    } else if (scope.entities.map.selectedY > pos.y / 60) {
-                         scope.entities.map.selectedY -= 1
+                    if (scope.map.selectedX < pos.x / 60) {
+                         scope.map.selectedX += 1
+                    } else if (scope.map.selectedX > pos.x / 60) {
+                         scope.map.selectedX -= 1
+                    } else if (scope.map.selectedY < pos.y / 60) {
+                         scope.map.selectedY += 1
+                    } else if (scope.map.selectedY > pos.y / 60) {
+                         scope.map.selectedY -= 1
                     } else {
-                         scope.agents.players.path = scope.entities.map.pathFind(scope.agents.players.start, scope.entities.map.target, "player")
+                         scope.agents.players.path = scope.map.pathFind(scope.agents.players.start, scope.map.target, "player")
                          this.eventKeeper.addEvent({ name: "movePlayer", timeToTrigger: 0.025, target: scope.agents.players.targetName })
                          return
                     }
@@ -244,7 +228,7 @@ class mapState extends State{
 
                }
           }else if (event.name === "movePlayer") {
-               if (scope.agents.players.moveToNextIndex(scope.entities.map) === true) {
+               if (scope.agents.players.moveToNextIndex(scope.map) === true) {
                     
                     this.eventKeeper.repeatEvent(event)
                } else {
@@ -287,27 +271,30 @@ class mapState extends State{
           if (JSON.stringify(event) === '{}') {
                
           } else {
-               //console.log(scope.entities.map.target)
                
-               if (event.Enter === true && scope.agents.players.whereAmI !== "moving" &&  scope.entities.map.target.sprite.name === "path") {
+               if (event.Enter === true && scope.agents.players.whereAmI !== "moving" &&  scope.map.target.sprite.name === "path") {
                     scope.agents.players.whereAmI = "moving"
                     scope.agents.players.pathIndex = 0
 
-                         scope.agents.players.path = scope.entities.map.pathFind(scope.agents.players.start, scope.entities.map.target, "player")
+                         scope.agents.players.path = scope.map.pathFind(scope.agents.players.start, scope.map.target, "player")
 
                     this.eventKeeper.addEvent({ name: "movePlayer", timeToTrigger: 0.05, target: scope.agents.players.targetName})
                } else if (event.ArrowRight === true) {
                     delete event.ArrowRight
-                    scope.entities.map.selectedX+=1
+                    scope.map.selectedX+=1
                } else if (event.ArrowLeft === true) {
                     delete event.ArrowLeft
-                    scope.entities.map.selectedX-=1
+                    if (scope.map.selectedX > 0) {
+                         scope.map.selectedX -= 1
+                    }
                } else if (event.ArrowUp === true) {
                     delete event.ArrowUp
-                    scope.entities.map.selectedY-=1
+                    if (scope.map.selectedY > 0) {
+                         scope.map.selectedY -= 1
+                    }
                } else if (event.ArrowDown === true) {
                     delete event.ArrowDown
-                    scope.entities.map.selectedY+=1
+                    scope.map.selectedY+=1
                }
           }
      }

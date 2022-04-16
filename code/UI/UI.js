@@ -22,14 +22,11 @@ class UI {
           if (this.hidden === false) {
                ctx.font = this.fnt + 'px Adventure';
 
-               //console.log(this.longestWord())
-
                var textWidth = ctx.measureText(this.longestWord()).width
                var lineHeight = this.fnt * 1.286;
                if (this.setToText === true) {
                     this.body.width = textWidth * 1.25;
                } else {
-                    //console.log(this.longestWord(), textWidth, this.body.width)
                     var counter = 50
                     while (textWidth + 15 > this.body.width) {
                          counter--
@@ -57,7 +54,6 @@ class UI {
 
                for (var i = 0; i < this.txt.length; i++) {
                     this.centerX = this.body.pos.x + (this.body.width - ctx.measureText(this.txt[i]).width) / 2
-
                     this.yPos = (this.body.pos.y + lineHeight * i) + 5 + (lineHeight * 0.25)
                     if (this.pickable) {
                          if (this.index === i) {
@@ -74,13 +70,11 @@ class UI {
                               ctx.fillColor = "white"
                               ctx.fillStyle = "white"
                               ctx.fillText(this.txt[i], this.centerX, this.yPos, 1024)
-
                          }
                     } else {
                          ctx.fillText(this.txt[i], this.centerX, this.yPos, 1024)
                     }
                }
-
           }
      }
      longestWord() {
@@ -93,7 +87,6 @@ class UI {
           }
           return longestWord
      }
-
 }
 
 class UIBuilder{
@@ -115,9 +108,8 @@ class UIBuilder{
      }
      setSize(width, height) {
           //var textSize = this.ctx.measureText("ssssssss")//longestLength(this.ctx, this.menuList))
-               this.width = width;
-               this.height = height;
-          
+          this.width = width;
+          this.height = height;
           return this
      }
      setFont(fnt) {
@@ -137,9 +129,6 @@ class UIBuilder{
           return this
      }
      build() {
-          //if (!('x' in this)) { throw new Error("x missing") }
-          //if (!('y' in this)) { throw new Error("y missing") }
-
           return new UI(this.ctx, this.x, this.y, this.width, this.height, this.fnt || 32, this.pickable, this.parent || null, this.hidden || false, this.menuList)
      }
 }

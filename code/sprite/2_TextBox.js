@@ -1,18 +1,19 @@
-///create an array of textboxes being controlled by a parent outside or part of the state
+///create an array/dictionary of textboxes being controlled by a parent outside or part of the state
 class TextBox {
-     constructor(name, body, text) {
+     constructor(name, body, text, fnt) {
           this.name = name
           this.body = body;
           this.index = 0
           this.textIndex = 0
 
           this.text = text
-          this.fnt = 20
+          this.fnt = fnt
 
           this.eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
           this.eventKeeper.addEvent({ name: "advanceText", timeToTrigger: 0.5 })
           
           this.isActive = false
+          this.wasTriggeredBefore = false
 
      }
 
@@ -59,6 +60,12 @@ class TextBox {
                x += ctx.measureText(words[i] + "  ").width
           }
      }
+     dealWithInteraction() {
+                    
+          this.eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
+          this.eventKeeper.addEvent({ name: "advanceToNextIndex", timeToTrigger: 0.025})
+
+     }
      dealWithEvent(event) {
           if (event.name === "advanceText") {
                this.advanceText()
@@ -66,7 +73,10 @@ class TextBox {
                if (this.index < this.text.length - 1) {
                     this.index += 1
                     this.textIndex = 0
-                    this.eventKeeper.addEvent({ name: "advanceText", timeToTrigger: 0.15})
+                    this.eventKeeper.addEvent({ name: "advanceText", timeToTrigger: 0.05})
+               } else {
+                    
+                    this.isActive = false 
                }
           }
      }
@@ -74,14 +84,18 @@ class TextBox {
           var wordLength = this.text[this.index].split(' ').length 
           if (this.textIndex < wordLength) {
                this.textIndex += 1
-               this.eventKeeper.addEvent({ name: "advanceText", timeToTrigger: 0.15})
+               this.eventKeeper.addEvent({ name: "advanceText", timeToTrigger: 0.05})
           } else {
-               this.eventKeeper.addEvent({ name: "advanceToNextIndex", timeToTrigger: 2.0})
+               this.eventKeeper.addEvent({ name: "advanceToNextIndex", timeToTrigger: 0.25})
           }
      }
 }
 
 class TextBoxBuilder{
+     setFont(fnt) {
+          this.fnt = fnt
+          return this
+     }
      setBody(body) {
           this.body = body 
           return this
@@ -100,7 +114,7 @@ class TextBoxBuilder{
      }
      build() {
           if (!('body' in this)) { throw new Error("body missing") }
-          return new TextBox(this.name, this.body, this.text)
+          return new TextBox(this.name, this.body, this.text, this.fnt || 20)
      }
 }
 //var tBox1 = new TextBoxBuilder().setBody(new RectBuilder().setXY(10, 10).setSize(50, 50).build()).setName("mario Jumpman mario")

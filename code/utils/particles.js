@@ -59,7 +59,6 @@ class spriteParticleManager {
                this.particles.push(new spriteParticle(x, y, Math.random() * 150, cI))
                cI = 2.1 + (i * Math.PI / 90)
           }
-
      }
      update() {
           if (this.hidden === false) {

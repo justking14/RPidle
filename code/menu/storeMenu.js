@@ -45,9 +45,7 @@ class storeMenu extends menuBase {
                     window.game.state.gold -= currentItem.price
                     window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] += 1 
                                              
-                         
                     currentItem.text = currentItem.title + "." + "$" + currentItem.price + " (" + window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] + ")"
-
                }
           }
      }
@@ -72,9 +70,7 @@ class storeItemBase{
           } else {
                this.purchased = false
           }
-
           this.width = 1000;
-
           console.log(item)
      }
      update() { }
@@ -113,8 +109,6 @@ class storeItemBase{
                ctx.fillColor = "black"
                ctx.fillStyle = "black"
           }
-          
           ctx.fillText(this.text, body.pos.x + 10, body.pos.y + 10 + (this.itemIndex * 50), 1024)
-
      }
 }

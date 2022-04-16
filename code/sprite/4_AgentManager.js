@@ -18,20 +18,19 @@ class AgentManager {
           //this.midLerp = false
      }
 
-  
-
-
      returnStatus() {
           var returnStatusArray = []
           for (let agent of this.agents) { returnStatusArray.push(agent.status.returnStatus()); }
           return returnStatusArray
      }
+     /*
      returnMiniStatus() {
           var returnStatusArray = []
           for (let agent of this.agents) { returnStatusArray.push(agent.status.returnMiniStatus()); }
           returnStatusArray.push(["Gold: " + window.game.state.gold + " Time Til Level-Up: " + window.game.state.timeLeft.returnString()])
           return returnStatusArray
      }
+     */
 
      update() {
           for (var agent in this.agents) {
@@ -51,7 +50,7 @@ class AgentManager {
                          agent.biggerSprite.draw(ctx)
                     }
                }
-           }
+          }
      }
      drawReticule(ctx) {
           
@@ -120,7 +119,6 @@ class AgentManager {
      }
      placeChildren(size) {
           if (size === undefined) {
-
                this.agents[0].setPosition(this.body.pos.x + 5, this.body.pos.y)
                this.agents[1].setPosition(this.body.pos.x + 35, this.body.pos.y)
                this.agents[2].setPosition(this.body.pos.x + 20, this.body.pos.y + 30)
@@ -147,7 +145,6 @@ class AgentManager {
      battleCalculations(other, isWeakness) {
           this.attacker.setPositionV(this.attacker.sprite.body.resetPosition)
           var returnV = other.beDamaged(this.attacker, isWeakness || false)
-
           
           if (other.amIDead()) {
                for (var i = 0; i < this.agents.length; i++){

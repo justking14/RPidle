@@ -22,7 +22,8 @@ class Status {
           this.maxHealth += 5//this.maxHealth * 0.1
           this.attack = Math.floor(this.attack)
           this.maxHealth = Math.floor(this.maxHealth)
-          this.currentHealth = Math.min(this.currentHealth*1.25, this.maxHealth)
+          this.currentHealth = Math.min(this.currentHealth * 1.25, this.maxHealth)
+     
      }
      getNextExpThreshold() {
           this.maxExp = this.level ** 2;
@@ -31,7 +32,7 @@ class Status {
           return  [this.name+ " LVL:"+ " " + this.level+ " XP: " + this.currentExp + "/" + this.maxExp+ " HP: " + this.currentHealth + "/" + this.maxHealth]
      }
      returnMiniStatus() {
-                    return  [this.name+ " LV: " + this.level + "  Health: " + this.currentHealth + "/" + this.maxHealth]
+          return  [this.name+ " LV: " + this.level + "  Health: " + this.currentHealth + "/" + this.maxHealth]
 
      }
 }

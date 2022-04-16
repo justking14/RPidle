@@ -29,12 +29,14 @@ class Agent {
                if (this.status.dead === false) {
                     //this.particles = new spriteParticleManager(this.getPosition().x + 75 / 2, this.getPosition().y + 75 / 2)
                     this.particles = new spriteParticleManager(this.getPosition().x, this.getPosition().y)
-
                     this.particles.hidden = false
-               //}
-
                     this.sprite.img.src = "images/grave.png"
                     this.biggerSprite.img.src = "images/grave2.png"
+
+                    if (this.status.name === "Hero") {
+                         window.game.state.textBoxManager.start("deathText")
+
+                    }
 
                }
                this.status.dead = true
@@ -84,17 +86,19 @@ class Agent {
           this.status.currentExp += experience * 5
           var leveledUp = "false" 
           while (this.status.currentExp >= this.status.maxExp) {
-               this.status.currentExp = 0;//-= this.status.maxExp
-               this.status.maxExp += this.status.level*5
+               this.status.currentExp = 0; //-= this.status.maxExp
+               this.status.maxExp = this.status.level**2 //+= this.status.level*5
                this.status.level += 1
                leveledUp = this.status.name  
           }
-          if (leveledUp  === "Hero") {
+          if (leveledUp === "Hero") {
+          //if(this.status.name === "Hero"){
                var timeLeft2 = 0
                ///1 exp every 3.5 seconds
                //
                if (window.game.state.menuDict["automation"]["mercenaries"]["count"] !== 0) {
-                    timeLeft2 = Math.floor((this.status.maxExp/3.5)/window.game.state.menuDict["automation"]["mercenaries"]["count"])
+                    timeLeft2 = Math.ceil(( this.status.maxExp * 10.0) / window.game.state.menuDict["automation"]["mercenaries"]["count"])
+                    console.log("The time remaining to level up is ", timeLeft2, " ", this.status.maxExp/5, window.game.state.menuDict["automation"]["mercenaries"]["count"])
                }
                window.game.state.timeLeft = new Time(Math.floor(Date.now() / 1000),timeLeft2  )
           }
