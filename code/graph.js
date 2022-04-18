@@ -5,7 +5,6 @@ class AGraph {
           this.inn, this.store;
           this.selectedX = 3, this.selectedY = 3;
 
-          this.battlefields = [];
           for (var i = 0; i < gameMap.length; i++) {
                var row = []
                for (var j = 0; j < gameMap[i].length; j++) {
@@ -18,8 +17,6 @@ class AGraph {
                     var square = new Tile(i, j, (j * 60), (i * 60), 60, 60, name)
                     if (gameMap[i][j] === "I") {
                          this.inn = new Tile(i, j, (j * 60), (i * 60), 60, 60, "inn")
-                    } else if (gameMap[i][j] === "G") {
-                         this.battlefields[0] = square
                     } else if (gameMap[i][j] === "S") {
                          this.store = new Tile(i, j, (j * 60), (i * 60), 60, 60, "store")
                     }
@@ -29,9 +26,6 @@ class AGraph {
           }
           this.assignNeighbors()
 
-          for (var i = 0; i < 30; i++) {
-               this.battlefields[i] = this.getRandomTarget()
-          }
 
      }
      getRandomTarget() {
@@ -45,8 +39,10 @@ class AGraph {
                //console.log(pickedNode)
                if (pickedNode.isWall === false) {
                     foundOne = true 
-                    for (var i = 0; i < this.battlefields.length; i++){
-                         if(this.nodes[rx][ry].isEqual(this.battlefields[i]) === true){foundOne = false }
+                    for (var i = 0; i < window.game.state.agents.goblins.length; i++){
+                         if (window.game.state.agents.goblins[i].tile !== undefined) {
+                              if (this.nodes[rx][ry].isEqual(window.game.state.agents.goblins[i].tile) === true) { foundOne = false }
+                         }
                     }
                     if (this.nodes[rx][ry].isEqual(this.inn) === true || this.nodes[rx][ry].isEqual(this.store) === true) {
                          foundOne = false 

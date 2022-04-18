@@ -1,6 +1,6 @@
 
 class goblinManager extends AgentManager {
-     constructor(x, y, width, height, name, level) {
+     constructor(x, y, width, height, name, level, location) {
           super(x, y, width, height)
           this.name = name
           this.isFighting = false
@@ -18,6 +18,43 @@ class goblinManager extends AgentManager {
                }
                this.agents[i].biggerSprite = new SpriteBuilder().setBody(new BodyBuilder().setXY(this.agents[i].sprite.body.pos.x, this.agents[i].sprite.body.pos.y).setSize(width, height).build()).setName("Enemy2").build()
           }
+
+          this.tile = location;
+          if (this.tile !== undefined) {
+               this.setStartPosition()
+          }
+          this.inCombat = false 
+          this.progressBeingTracked = false 
+          this.progress = 0
+
+     }
+
+     draw(ctx, size) {
+
+          for (let agent of this.agents) {
+               if (agent.unlocked === true) {
+                    if (size === undefined) {
+                         agent.draw(ctx);
+                    } else {
+                         agent.biggerSprite.setPositionV(agent.getPosition())
+                         agent.biggerSprite.draw(ctx)
+                    }
+               }
+          }
+
+          if (this.inCombat === false && this.progressBeingTracked === true ) {
+               ctx.fillStyle = "white"
+               ctx.fillRect(this.body.pos.x, this.body.pos.y, 60, 10)
+
+                    ctx.fillStyle = "blue"
+                    ctx.fillRect(this.body.pos.x, this.body.pos.y, 60 * this.progress, 10)
+               
+          }
+     }
+     setStartPosition() {
+          console.log(this.tile)
+          this.setPositionV(this.tile.returnPosition())
+          this.placeChildren()
      }
      setBigSprite() {
           for (var i = 0; i < this.agents.length; i++){
@@ -44,8 +81,10 @@ class goblinManager extends AgentManager {
           this.heal(99999)
      }
      enterCombat() {
+          this.inCombat = true 
           this.resetReset()
           this.placeChildren("big")
           this.setBigSprite()
+
      }
 }

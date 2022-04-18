@@ -116,7 +116,7 @@ class playerManager extends AgentManager {
           if (this.pathIndex < path.length) {
                return true
           } else {
-               if (path[this.pathIndex - 1].pos.equals(map.battlefields[0].returnPosition())) {
+               if (path[this.pathIndex - 1].pos.equals(window.game.state.agents.goblins[0].tile.returnPosition())) {
                     this.whereAmI = "fightingGoblins"
                } else if (path[this.pathIndex - 1].pos.equals(map.store.returnPosition())) {
                     this.whereAmI = "buying"

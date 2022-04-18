@@ -89,9 +89,9 @@ var menu_data = {
                {
                     id: "Mercenaries",
                     title: "Mercenary",
-                    cost: 1,
+                    cost: 5,
                     description: "Adds one set of mercenaries to the player's army who will fight in their place.",
-                    unlockedByDefault: false,
+                    unlockedByDefault: true,
                     canBeBought: true,
                     type: "numerical",
      

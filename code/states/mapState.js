@@ -96,7 +96,7 @@ class mapState extends State{
                     //var i = oldvalue
 
                     for (var i = oldValue; i < window.game.state.menuDict["automation"]["mercenaries"]["count"]; i++) {
-                         //scope.agents.mercenaries[i] = new playerManager(0,0,75,75, true) 
+                         scope.agents.mercenaries[i] = new mercenaryManager(0, 0, 75, 75)
                          scope.agents.mercenaries[i].start = scope.map.inn.clone()
                          scope.agents.mercenaries[i].setPosition(scope.agents.mercenaries[i].start.pos.x, scope.agents.mercenaries[i].start.pos.y)
                          scope.agents.mercenaries[i].placeChildren()
@@ -105,17 +105,13 @@ class mapState extends State{
                          scope.agents.mercenaries[i].pathIndex = 0
 
                          scope.agents.mercenaries[i].targetName = "fightingGoblins"
-                         scope.agents.mercenaries[i].target = scope.map.battlefields[i].clone()
+                         scope.agents.mercenaries[i].target = scope.agents.goblins[i].tile.clone()
                          scope.agents.mercenaries[i].selectedVector = new Vector(0,0)
 
                          scope.agents.goblins[i].isFighting = false
 
                          console.log(scope.agents.mercenaries[i])
-                         scope.agents.mercenaries[i].startPathFinding(scope.map.battlefields[i].returnPosition(), i )
-
-                         //scope.agents.mercenaries[i].eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
-
-                         //scope.agents.mercenaries[i].eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.015 + 0.005 * i, target: scope.map.battlefields[i].returnPosition(), index: i })
+                         scope.agents.mercenaries[i].startPathFinding(scope.agents.goblins[i + 1].tile.returnPosition(), i )
                     }
                }
           } else if (type === "travel" || type === "fully") {
@@ -136,15 +132,14 @@ class mapState extends State{
 
           //this.menuChange("mercenaries", 0)
           for (var i = 0; i < window.game.state.menuDict["automation"]["mercenaries"]["count"]; i++) {
+               scope.agents.mercenaries[i] = new mercenaryManager(0, 0, 75, 75)
           }
-          for (var i = 0; i < window.game.state.menuDict["automation"]["mercenaries"]["maxCount"]; i++) {
-                              scope.agents.mercenaries[i] = new mercenaryManager(0, 0, 75, 75)
-
-               scope.agents.goblins[i] = new goblinManager(500, 400, 75, 75, "Goblin", 1)
-
-               scope.map.battlefields[i] = scope.map.getRandomTarget()
-          
+          for (var i = 0; i < window.game.state.menuDict["automation"]["mercenaries"]["maxCount"] + 1; i++) {
+               scope.agents.goblins[i] = new goblinManager(500, 400, 75, 75, "Goblin", 1, scope.map.getRandomTarget())
           }
+
+
+
 
           this.eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
 
@@ -158,13 +153,6 @@ class mapState extends State{
                scope.agents.mercenaries[i].placeChildren()
           }
 
-          for (var i = 0; i < scope.map.battlefields.length; i++) {
-               scope.map.battlefields[i] = scope.map.getRandomTarget()
-               scope.agents.goblins[i].setPositionV(scope.map.battlefields[i].returnPosition());
-               scope.agents.goblins[i].placeChildren()
-               scope.agents.goblins[i].isFighting = false
-          }
-
           this.findTarget(scope)
      }
 
@@ -173,16 +161,7 @@ class mapState extends State{
                console.log("MERCENARIES UNLOCKED")
 
                for (var i = 0; i < scope.agents.mercenaries.length; i++) {
-                    /*
-                    scope.agents.mercenaries[i].whereAmI = "moving"
-                    scope.agents.mercenaries[i].pathIndex = 0
-
-                    scope.agents.mercenaries[i].targetName = "fightingGoblins"
-                    scope.agents.mercenaries[i].target = scope.map.battlefields[i].clone()
-
-                     scope.agents.mercenaries[i].eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.015 + 0.005 * i, parent: "mercenary", target: scope.map.battlefields[i].returnPosition(), index: i })
-                    */
-                                             scope.agents.mercenaries[i].startPathFinding(scope.map.battlefields[i].returnPosition(), i )
+                    scope.agents.mercenaries[i].startPathFinding(scope.agents.goblins[i + 1].tile.returnPosition(), i )
 
                }
         
@@ -198,8 +177,8 @@ class mapState extends State{
                     this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.05, parent: "player", target: scope.map.inn.returnPosition() })
                } else {
                     scope.agents.players.targetName = "fightingGoblins"
-                    scope.map.target = scope.map.battlefields[0].clone()
-                    this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.05, parent: "player", target: scope.map.battlefields[0].returnPosition() })
+                    scope.map.target = scope.agents.goblins[0].tile.clone()
+                    this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.05, parent: "player", target: scope.agents.goblins[0].tile.returnPosition() })
                }
           }  
      }
@@ -229,7 +208,6 @@ class mapState extends State{
                }
           }else if (event.name === "movePlayer") {
                if (scope.agents.players.moveToNextIndex(scope.map) === true) {
-                    
                     this.eventKeeper.repeatEvent(event)
                } else {
                     console.log(scope.agents.players.whereAmI)

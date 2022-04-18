@@ -30,14 +30,28 @@ class mercenaryManager extends AgentManager {
           this.target = target
 
           this.reticuleDistance = 3.5/(Math.abs(this.selectedVector.x - (target.x / 60)) + Math.abs(this.selectedVector.y - (target.y / 60))) 
-          console.log("merc start ", this.reticuleDistance, this.selectedVector,target, target.x/60, target.y/60)
+          console.log("merc start ", this.reticuleDistance, this.selectedVector, target, target.x / 60, target.y / 60)
+          
 
           this.eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
           this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: this.reticuleDistance, target: target, index: index })
+                         
+          this.eventKeeper.addEvent({ name: "trackGoblin", timeToTrigger: 1.0, index: index })
+
      }
 
      dealWithEvent(scope, event) {
-          if (event.name === "moveReticule") {
+          if (event.name === "trackGoblin") {
+               var index = event.index
+               scope.agents.goblins[index + 1].progressBeingTracked = true 
+               scope.agents.goblins[index + 1].progress += 0.1
+               if (scope.agents.goblins[index + 1].progress > 1.0) {
+                    scope.agents.goblins[index + 1].progress = 0.0
+               } else {
+                    this.eventKeeper.addEvent({ name: "trackGoblin", timeToTrigger: 1.0, index: index })
+               }
+
+          }else if (event.name === "moveReticule") {
                var pos = event.target
                var index = event.index
                if (scope.menuDict["automation"]["mercenaries"]["count"] >= event.index) {
@@ -53,6 +67,8 @@ class mercenaryManager extends AgentManager {
                     } else {
                          this.path = scope.map.pathFind(this.start, this.target, "mercenary")
 
+
+                         scope.agents.goblins[index].progress = 3.5
 
                          //this.eventKeeper.addEvent({ name: "moveMercenary", timeToTrigger: 0.025 + 0.005 * index, target: this.targetName, index: index })
                          var dist = 3.0 / this.path.length //((Math.abs((this.start.x/60) - (pos.x/60))) + Math.abs((this.start.y/60) - (pos.y/60)))
@@ -74,8 +90,11 @@ class mercenaryManager extends AgentManager {
                     } else {
                          //if (scope.agents.mercenaries[index].whereAmI === "fightingGoblins") {
                          //if (scope.agents.goblins[index].isFighting === false) {
-                         scope.agents.goblins[index].isFighting = true;
+                         
+                         //scope.agents.goblins[index + 1].isFighting = true;
                          this.eventKeeper.addEvent({ name: "MercenariesFight", timeToTrigger: 3.5, type: "combat", index: event.index })
+                                             scope.agents.goblins[index].progress = 6.5
+
                          //}
                          //}
                          this.whereAmI = "undecided"
@@ -85,17 +104,24 @@ class mercenaryManager extends AgentManager {
                if (scope.menuDict["automation"]["mercenaries"]["count"] >= event.index) {
                     window.game.state.gold += 1
                     var index = event.index;
-                    ///console.log("INDEX ", index)
+                    console.log("INDEX ", index)
                     for (let i = 0; i < scope.agents.players.agents.length; i++) {
                          scope.agents.players.agents[i].levelUp(1)
                     }
 
-                    scope.map.battlefields[index] = scope.map.getRandomTarget()
-                    scope.agents.goblins[index].setPositionV(scope.map.battlefields[index].returnPosition());
+                    index+= 1
+                    scope.agents.goblins[index].tile = scope.map.getRandomTarget()
+                    scope.agents.goblins[index].setPositionV(scope.agents.goblins[index].tile.returnPosition());
                     scope.agents.goblins[index].placeChildren()
                     scope.agents.goblins[index].isFighting = false
 
-                    this.startPathFinding(scope.map.battlefields[index].clone(), index)
+                                        
+                    scope.agents.goblins[index].progress = 0.0
+                    scope.agents.goblins[index].progressBeingTracked = false 
+
+
+
+                    this.startPathFinding(scope.agents.goblins[index].tile.clone(), event.index)
                }               
           }
      }
@@ -118,9 +144,11 @@ class mercenaryManager extends AgentManager {
           if (this.pathIndex < path.length) {
                return true
           } else {
+               /*
                if (path[this.pathIndex - 1].pos.equals(map.battlefields[0].returnPosition())) {
                     this.whereAmI = "fightingGoblins"
                } 
+               */
                this.pathIndex = 0
                return false
           }

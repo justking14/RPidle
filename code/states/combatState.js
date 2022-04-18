@@ -152,9 +152,6 @@ class combatState extends State {
      onExit(scope) {
           this.battleState = new battleState()
           scope.agents.players.resetAttackers()
-
-          scope.agents.goblins[0].reset()
-          scope.map.start = scope.map.battlefields[0].clone()//.getRandomTarget()
      }
 
      playerChoose(scope) {

@@ -42,7 +42,7 @@ function Game(w, h, targetFps, skipTitle) {
                     "active": false,
                     "unlocked": unlockedDefault,
                     "count": 0,
-                    "maxCount": 50,
+                    "maxCount": 0,
                     "cap": 50,
                }
                
@@ -58,12 +58,7 @@ function Game(w, h, targetFps, skipTitle) {
      this.state.agents.players.start = this.state.map.inn.clone()
      this.state.agents.mercenaries = []
      this.state.agents.goblins = []
-    // for(var i = 0; i < this.state.menuDict["automation"]["mercenaries"] + 1; i++){
-     for (var i = 0; i < this.state.menuDict["automation"]["mercenaries"]["maxCount"]; i++) {
-
-          this.state.agents.mercenaries[i] = new mercenaryManager(0,0,75,75)
-          this.state.agents.goblins[i] = new goblinManager(500, 400, 75, 75, "Goblin", 1)
-     }
+     
      this.state.menu = new menuState()
 
      this.state.gold = 100;
@@ -161,8 +156,6 @@ function gameUpdate(scope) {
                          console.log("PROPERTY ", property)
                          state.menuDict["automation"][property]["unlocked"] = true 
                     }
-
-                   // scope.menuDict["automation"]["fully"]["active"] = !scope.menuDict["automation"]["fully"]["active"]
                     console.log("Auto cheat activated/deactivated")
                }
                if (keysPressed.m === true || keysPressed.M === true) {
@@ -214,6 +207,8 @@ function gameRender(scope) {
                scope.state.textBoxManager.draw(scope.state.context)
 
                filterStuff(scope.state.menuDict["Visuals"]["colorFilter"], scope.state.context.getImageData(0, 0, scope.constants.width, scope.constants.height), scope)
+               
+          } else {
                
           }
      }
@@ -392,8 +387,13 @@ function waterfall(){
           const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height)
           ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+     
+     var bgImg = new Image()
+     bgImg.src = "images/bgTitle.png"
+     ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height)
+
           let particleArray = []
-          const numOfParticles = 10000
+          const numOfParticles = 30000
           var dead = false 
 
           let mappedImage = []
@@ -423,8 +423,8 @@ function waterfall(){
 
           class Particle {
                constructor() {
-                    this.x = Math.random() * canvas.width
-                    this.y = 0// Math.random() * canvas.height/3;
+                    this.x = clamp(Math.random() * canvas.width, 350, 915)
+                    this.y = clamp(Math.random() * canvas.height, 150, canvas.height)// Math.random() * canvas.height/3;
                     this.speed = 0;
                     this.velocity = Math.random() * 1.75;
                     this.size = Math.random() * 15 + 5
@@ -439,8 +439,8 @@ function waterfall(){
 
                     this.y += movement//this.velocity
                     if (this.y >= canvas.height) {
-                         this.y = 0;
-                         this.x = Math.random() * canvas.width;
+                         this.y = 150;
+                         this.x = clamp(Math.random() * canvas.width, 350, 915)
                     }
                }
                draw(color) {
@@ -459,16 +459,22 @@ function waterfall(){
           init()
           function animate() {
                if (state.pastTitle === false) {
+                         
+
+
                     ctx.globalAlpha = 0.05;
 
                     ctx.fillStyle = 'rgb(0,0,0)';
                     ctx.fillRect(0, 0, canvas.width, canvas.height)
-                    ctx.globalAlpha = 0.2
+                    ctx.globalAlpha = 1.0
+
+                    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height)
+
 
                     for (let i = 0; i < particleArray.length; i++) {
                          particleArray[i].update()
                          ctx.globalAlpha = (particleArray[i].speed * 0.35) + 0.075
-                         particleArray[i].draw('rgb(' + (particleArray[i].speed * 40 )+ ', ' + (particleArray[i].speed * 40) + ',255)')  
+                         particleArray[i].draw('rgb(' + (particleArray[i].speed * 40 )+ ', ' + (particleArray[i].speed * 20) + ',255)')  
                          if (particleArray[i].size <= 1) {
                               particleArray.splice(i, 1)
                               i--

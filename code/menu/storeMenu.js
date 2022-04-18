@@ -33,17 +33,28 @@ class storeMenu extends menuBase {
 
      makePurchase() {
           var currentItem = this.items[this.index]
+          console.log(currentItem)
+
+
+
           if (window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["unlocked"] === false) {
                if (window.game.state.gold >= currentItem.price) {
                     window.game.state.gold -= currentItem.price
 
                     currentItem.purchased = true 
                     window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["unlocked"] = true 
+
+                    if (currentItem.type === "numerical") {
+                         window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] += 1 
+                         currentItem.text = currentItem.title + "." + "$" + currentItem.price + " (" + window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] + ")"
+                    }
                }
-          }else if(currentItem.type === "numerical"){
+          } else if (currentItem.type === "numerical") {
                if (window.game.state.gold >= currentItem.price && window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] < window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["cap"]) {
                     window.game.state.gold -= currentItem.price
+                    console.log(window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"])
                     window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] += 1 
+
                                              
                     currentItem.text = currentItem.title + "." + "$" + currentItem.price + " (" + window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] + ")"
                }
