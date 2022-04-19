@@ -111,7 +111,7 @@ class Agent {
      returnMiniStatus() { return this.status.returnMiniStatus()}
 
      amIAvailable() {
-          if (this.unlocked === false || this.status.dead === true) { return false }
+          if (this.unlocked === false || this.status.dead === true || this.status.currentHealth <= 0) { return false }
           return true 
      }
 }

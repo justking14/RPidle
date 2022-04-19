@@ -43,37 +43,8 @@ var weapon_data = {
 }
 
 //          this.storeUI = new Store(["Combat Automation", "Full Automation", "Mercenary", "Escape"], ["50", "5", "999", "0"], 400)
-
-var menu_data = {
-     "store": {
-          items: [
-               {
-                    id: "CombatAutomation",
-                    title: "Combat Automation",
-                    cost: 50,
-                    description: "Automates every aspect of the combat experience.",
-                    unlockedByDefault: false,
-                    canBeBought: true,
-                    type: "binary",
-
-
-                    menuType: "automation",
-                    subMenu: "combat"
-               },
-               {
-                    id: "TravelAutomation",
-                    title: "Travel Automation",
-                    cost: 5,
-                    description: "Sends player to the next battle after combat or to the inn when Hero is dead.",
-                    unlockedByDefault: false,
-                    canBeBought: true,
-                                        type: "binary",
-
-
-                    menuType: "automation",
-                    subMenu: "travel"
-               },
-               {
+/*
+             {
                     id: "FullAutomation",
                     title: "Full Automation",
                     cost: 25,
@@ -86,10 +57,43 @@ var menu_data = {
                     menuType: "automation",
                     subMenu: "fully"
                },
+*/
+
+var menu_data = {
+     "store": {
+          items: [
+               {
+                    id: "TravelAutomation",
+                    title: "Travel Automation",
+                    cost: 3,
+                    description: "Sends player to the next battle after combat or to the inn when Hero is dead.",
+                    unlockedByDefault: false,
+                    canBeBought: true,
+                                        type: "binary",
+
+
+                    menuType: "automation",
+                    subMenu: "travel"
+               },  
+               {
+                    id: "CombatAutomation",
+                    title: "Combat Automation",
+                    cost: 7,
+                    description: "Automates every aspect of the combat experience.",
+                    unlockedByDefault: false,
+                    canBeBought: true,
+                    type: "binary",
+
+
+                    menuType: "automation",
+                    subMenu: "combat"
+               },
+
+  
                {
                     id: "Mercenaries",
                     title: "Mercenary",
-                    cost: 5,
+                    cost: 10,
                     description: "Adds one set of mercenaries to the player's army who will fight in their place.",
                     unlockedByDefault: true,
                     canBeBought: true,
@@ -260,6 +264,16 @@ var map_data = {
 }
 
 ////TO DO LIST
+//time to level up
+//menu hidden 
+//fraction health!!!
+//return to inn on auto
+//enemies too strong 
+//stronger heal 
+///time to level up busted
+//post purchase still not triggering
+//go now once menu is closed
+
 
 ///shop mercenary
 ///new paths and starts (for player)

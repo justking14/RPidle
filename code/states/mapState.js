@@ -43,7 +43,12 @@ class mapState extends State{
                     }
                }
           }
-          this.logUI.draw(ctx, ["Gold: " + window.game.state.gold, " Time Til Level-Up: " + window.game.state.timeLeft.returnString()])
+                         
+          if (scope.menuDict["automation"]["mercenaries"]["count"] !== 0) {
+               this.logUI.draw(ctx, ["Gold: " + window.game.state.gold, " Time Til Level-Up: " + window.game.state.timeLeft.returnString()])
+          } else {
+               this.logUI.draw(ctx, ["Gold: " + window.game.state.gold])
+          }
           //window.game.state.timeLeft.draw(ctx, " Time Til Level-Up: ")
           //this.tBox1.draw(ctx)
      }
@@ -76,13 +81,18 @@ class mapState extends State{
           var events = this.eventKeeper.update()
           for (var event in events) { this.dealWithEvent(scope, events[event]) }
 
-          //this.tBox1.update()
-
           if (scope.menuDict["automation"]["mercenaries"]["count"] !== 0) {
-
                for (var entity in scope.agents.mercenaries) {
                     var events = scope.agents.mercenaries[entity].eventKeeper.update()
                     for (var event in events) { scope.agents.mercenaries[entity].dealWithEvent(scope, events[event]) }
+               }
+                    
+               if (window.game.state.gold > 14) {
+                    scope.textBoxManager.start("mercenaryDoingWellText")
+               }
+               console.log(scope.menuDict["automation"]["mercenaries"]["count"], scope.menuDict["automation"]["mercenaries"]["cap"])
+               if (scope.menuDict["automation"]["mercenaries"]["count"] === scope.menuDict["automation"]["mercenaries"]["cap"] && window.game.state.menu.hidden === true) {
+                    scope.textBoxManager.start("finalText")
                }
           }
      }
@@ -125,6 +135,7 @@ class mapState extends State{
           console.log("Entered map")
 
           scope = window.game.state 
+          scope.menu.hidden = true 
                     
           this.logUI = new UIBuilder(this.log).setXY(25, -6).setSize(window.game.constants.width - 100, 100).build()
           //this.tBox1 = new TextBoxBuilder().setBody(new BodyBuilder().setXY(25, 500).setSize(window.game.constants.width - 100, 100).build()).setText(["i am the very modle of a modern major general, i've information animeal vegetable and mineral.  i know the kings of england and i quote the fights historical from marathon to waterloo in orders categorical .","sentence 2 of 2 3 4 5 6 7 8 9", "sentence 3 of 3 4 5 6 7 8 9 "]).build()
@@ -138,6 +149,9 @@ class mapState extends State{
                scope.agents.goblins[i] = new goblinManager(500, 400, 75, 75, "Goblin", 1, scope.map.getRandomTarget())
           }
 
+          if (window.game.state.gold >= 3) {
+               scope.textBoxManager.start("goToShopText")
+          }
 
 
 
@@ -233,7 +247,7 @@ class mapState extends State{
                scope.worldStateManager.transition(scope, event.type)  
 
           } else if (event.name === "healing") {
-               if (scope.agents.players.heal(20) === true) {
+               if (scope.agents.players.heal(50) === true) {
                     this.findTarget(scope)
                } else {
                     console.log(scope.agents.players.whereAmI )

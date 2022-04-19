@@ -44,7 +44,7 @@ class mercenaryManager extends AgentManager {
           if (event.name === "trackGoblin") {
                var index = event.index
                scope.agents.goblins[index + 1].progressBeingTracked = true 
-               scope.agents.goblins[index + 1].progress += 0.1
+               scope.agents.goblins[index + 1].progress += 0.09
                if (scope.agents.goblins[index + 1].progress > 1.0) {
                     scope.agents.goblins[index + 1].progress = 0.0
                } else {
@@ -68,7 +68,7 @@ class mercenaryManager extends AgentManager {
                          this.path = scope.map.pathFind(this.start, this.target, "mercenary")
 
 
-                         scope.agents.goblins[index].progress = 3.5
+                         scope.agents.goblins[index + 1].progress = 0.35
 
                          //this.eventKeeper.addEvent({ name: "moveMercenary", timeToTrigger: 0.025 + 0.005 * index, target: this.targetName, index: index })
                          var dist = 3.0 / this.path.length //((Math.abs((this.start.x/60) - (pos.x/60))) + Math.abs((this.start.y/60) - (pos.y/60)))
@@ -93,7 +93,7 @@ class mercenaryManager extends AgentManager {
                          
                          //scope.agents.goblins[index + 1].isFighting = true;
                          this.eventKeeper.addEvent({ name: "MercenariesFight", timeToTrigger: 3.5, type: "combat", index: event.index })
-                                             scope.agents.goblins[index].progress = 6.5
+                                             scope.agents.goblins[index + 1].progress = 0.65
 
                          //}
                          //}

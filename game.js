@@ -43,7 +43,7 @@ function Game(w, h, targetFps, skipTitle) {
                     "unlocked": unlockedDefault,
                     "count": 0,
                     "maxCount": 0,
-                    "cap": 50,
+                    "cap": 20,
                }
                
           },
@@ -61,7 +61,7 @@ function Game(w, h, targetFps, skipTitle) {
      
      this.state.menu = new menuState()
 
-     this.state.gold = 100;
+     this.state.gold = 0;
      this.state.timeLeft = new Time(Math.floor(Date.now() / 1000),5)
 
      this.state.context = this.context
@@ -156,15 +156,22 @@ function gameUpdate(scope) {
                          console.log("PROPERTY ", property)
                          state.menuDict["automation"][property]["unlocked"] = true 
                     }
+                                        
+                    //state.menuDict["automation"]["mercenaries"]["count"] = 50 //state.menuDict["automation"]["mercenaries"]["cap"]
+
+                    state.menuDict["automation"]["mercenaries"]["maxCount"] = 50 //state.menuDict["automation"]["mercenaries"]["cap"]
                     console.log("Auto cheat activated/deactivated")
                }
                if (keysPressed.m === true || keysPressed.M === true) {
-                    if (state.worldStateManager.currentState.name === "map") {
+                    if (state.worldStateManager.currentState.name === "map" || state.worldStateManager.currentState.name === "store") {
                          delete keysPressed.m
                          delete keysPressed.M
                          state.menu.onEnter(state)
                          state.menu.hidden = !state.menu.hidden
                     }
+               }
+               if (keysPressed.g === true || keysPressed.G === true) {
+                    state.gold = 100
                }
                if (state.menu.hidden === false) {
                     state.menu.dealWithInteraction(state, keysPressed)

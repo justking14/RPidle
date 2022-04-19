@@ -14,7 +14,7 @@ class goblinManager extends AgentManager {
           ]
           for (var i = 0; i < this.agents.length; i++){
                for (var j = 0; j < Math.floor(level / 2); j++){
-                    this.agents[i].levelUp(150)
+                    this.agents[i].levelUp(50)
                }
                this.agents[i].biggerSprite = new SpriteBuilder().setBody(new BodyBuilder().setXY(this.agents[i].sprite.body.pos.x, this.agents[i].sprite.body.pos.y).setSize(width, height).build()).setName("Enemy2").build()
           }
@@ -42,12 +42,13 @@ class goblinManager extends AgentManager {
                }
           }
 
-          if (this.inCombat === false && this.progressBeingTracked === true ) {
+          if (this.inCombat === false && this.progressBeingTracked === true) {
+               if( this.progress >= 1.0){this.progress = 1.0}
                ctx.fillStyle = "white"
                ctx.fillRect(this.body.pos.x, this.body.pos.y, 60, 10)
 
-                    ctx.fillStyle = "blue"
-                    ctx.fillRect(this.body.pos.x, this.body.pos.y, 60 * this.progress, 10)
+               ctx.fillStyle = "blue"
+               ctx.fillRect(this.body.pos.x, this.body.pos.y, 60 * this.progress, 10)
                
           }
      }

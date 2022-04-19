@@ -250,7 +250,7 @@ class combatState extends State {
 
           if (scope.agents.goblins[0].areWeDead() === true) {
                this.log.push("BATTLE WON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-               window.game.state.gold += 1
+               window.game.state.gold += Math.ceil(Math.random() * 2.0)
                this.eventKeeper.addEvent({ name: "leaveBattle", timeToTrigger: 3.5 })
           }else{
                if (scope.agents.players.setAttacker() === false) {

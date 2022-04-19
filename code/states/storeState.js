@@ -32,7 +32,18 @@ class storeState extends State {
                     if (this.storeUI.items[this.storeUI.index].name === "Escape") {
                          this.eventKeeper.addEvent({ name: "Transition", timeToTrigger: 1.0, type: "map" })
                     } else {
-                         this.storeUI.makePurchase()
+                         console.log(this.storeUI.items[this.storeUI.index])
+                         if (this.storeUI.makePurchase() === true) {
+                              console.log("ITEM PURCHASED ", this.storeUI.items[this.storeUI.index])
+                              if (this.storeUI.items[this.storeUI.index].type === "numerical"){
+                                   if (window.game.state.menuDict[this.storeUI.items[this.storeUI.index].menuType][this.storeUI.items[this.storeUI.index].subMenu]["maxCount"] > 0) {
+                                        scope.textBoxManager.start("mercenaryBoughtText")
+                                   }
+                              } else {
+                                   scope.textBoxManager.start("upgradeBoughtText")
+                              }
+                         }
+
                     }
                } else if (event.ArrowDown === true) {
                     delete event.ArrowDown

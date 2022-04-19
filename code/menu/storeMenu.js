@@ -33,7 +33,7 @@ class storeMenu extends menuBase {
 
      makePurchase() {
           var currentItem = this.items[this.index]
-          console.log(currentItem)
+          ///console.log(currentItem)
 
 
 
@@ -48,6 +48,7 @@ class storeMenu extends menuBase {
                          window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] += 1 
                          currentItem.text = currentItem.title + "." + "$" + currentItem.price + " (" + window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] + ")"
                     }
+                    return true 
                }
           } else if (currentItem.type === "numerical") {
                if (window.game.state.gold >= currentItem.price && window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] < window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["cap"]) {
@@ -57,8 +58,11 @@ class storeMenu extends menuBase {
 
                                              
                     currentItem.text = currentItem.title + "." + "$" + currentItem.price + " (" + window.game.state.menuDict[currentItem.menuType][currentItem.subMenu]["maxCount"] + ")"
+                    return true
                }
           }
+          console.log("purchase not made")
+          return false
      }
 }
 
