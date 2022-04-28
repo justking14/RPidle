@@ -63,7 +63,6 @@ class Agent {
      
 
      beDamaged(attacker, weakness) {
-          console.log("bbb ", weakness)
           var attack = attacker.status.attack + getRandomInt(-2, 2)
           if (weakness === true) {
                attack = attack * 2.5
@@ -75,6 +74,8 @@ class Agent {
                if (this.amIDead() === false) {
                     return attacker.status.name + " attacked " + this.status.name + " for " + attack + " points of damage"
                } else {
+                                        window.game.state.sounds["death"].play()
+
                     return attacker.status.name + " killed " + this.status.name
                }
           } else {
@@ -87,20 +88,23 @@ class Agent {
           var leveledUp = "false" 
           while (this.status.currentExp >= this.status.maxExp) {
                this.status.currentExp = 0; //-= this.status.maxExp
-               this.status.maxExp = this.status.level**2 //+= this.status.level*5
+               this.status.maxExp = Math.ceil(this.status.maxExp * 1.15) ///this.status.level**2 //+= this.status.level*5
                this.status.level += 1
                leveledUp = this.status.name  
           }
           if (leveledUp === "Hero") {
+               window.game.state.sounds["levelUp"].play()
+
           //if(this.status.name === "Hero"){
                var timeLeft2 = 0
                ///1 exp every 3.5 seconds
                //
                if (window.game.state.menuDict["automation"]["mercenaries"]["count"] !== 0) {
-                    timeLeft2 = Math.ceil(( this.status.maxExp * 10.0) / window.game.state.menuDict["automation"]["mercenaries"]["count"])
+                    timeLeft2 = Math.ceil(( (this.status.maxExp * 10.0)/5) / window.game.state.menuDict["automation"]["mercenaries"]["count"])
                     console.log("The time remaining to level up is ", timeLeft2, " ", this.status.maxExp/5, window.game.state.menuDict["automation"]["mercenaries"]["count"])
                }
-               window.game.state.timeLeft = new Time(Math.floor(Date.now() / 1000),timeLeft2  )
+               window.game.state.timeLeft = new Time(Math.floor(Date.now() / 1000), timeLeft2)
+               window.game.state.levelledUp = true 
           }
           this.status.levelUp()
 

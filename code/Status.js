@@ -29,9 +29,13 @@ class Status {
           this.maxExp = this.level ** 2;
      }
      returnStatus() {
+          this.currentHealth = Math.floor(this.currentHealth)
+          this.currentExp = Math.floor(this.currentExp)
           return  [this.name+ " LVL:"+ " " + this.level+ " XP: " + this.currentExp + "/" + this.maxExp+ " HP: " + this.currentHealth + "/" + this.maxHealth]
      }
      returnMiniStatus() {
+          this.currentHealth = Math.floor(this.currentHealth)
+          this.currentExp = Math.floor(this.currentExp)
           return  [this.name+ " LV: " + this.level + "  Health: " + this.currentHealth + "/" + this.maxHealth]
 
      }

@@ -85,6 +85,8 @@ class Color {
 }
 var colorOrange = new Color(192, 57, 43)//pom
 var colorBrown = new Color(231, 76, 60)
+var colorRed = new Color(255, 0, 0)//pom
+
 
 function createGradient(ctx, rct, arr) {
      //console.log("Check ", rct)

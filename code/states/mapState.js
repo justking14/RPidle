@@ -12,10 +12,15 @@ class mapState extends State{
           this.counter += 0.0075
           if (this.counter >= 11.0) {
                this.counter = 0
+               window.game.state.day+=1
           }
 
+          var tmpCounter = this.counter
           var scope = window.game.state 
-          scope.map.draw(ctx, this.counter, scope.agents.mercenaries);
+          if (scope.endgame === true) {
+               tmpCounter = 10
+          }
+          scope.map.draw(ctx, tmpCounter, scope.agents.mercenaries);
           ctx.globalAlpha = 1.0
 
           if (scope.hasOwnProperty('agents')) {
@@ -45,9 +50,9 @@ class mapState extends State{
           }
                          
           if (scope.menuDict["automation"]["mercenaries"]["count"] !== 0) {
-               this.logUI.draw(ctx, ["Gold: " + window.game.state.gold, " Time Til Level-Up: " + window.game.state.timeLeft.returnString()])
+               this.logUI.draw(ctx, ["Gold: " + window.game.state.gold + " Day: " + window.game.state.day, " Time Til Level-Up: " + window.game.state.timeLeft.returnString()])
           } else {
-               this.logUI.draw(ctx, ["Gold: " + window.game.state.gold])
+               this.logUI.draw(ctx, ["Gold: " + window.game.state.gold + " Day: " + window.game.state.day ] )
           }
           //window.game.state.timeLeft.draw(ctx, " Time Til Level-Up: ")
           //this.tBox1.draw(ctx)
@@ -55,8 +60,13 @@ class mapState extends State{
      miniDraw(ctx) {
           ctx.scale(0.15,0.15)
 
+           var tmpCounter = this.counter
           var scope = window.game.state 
-          scope.map.draw(ctx, this.counter, scope.agents.mercenaries);
+          if (scope.endgame === true) {
+               tmpCounter = 10
+          }
+          var scope = window.game.state 
+          scope.map.draw(ctx, tmpCounter, scope.agents.mercenaries);
           ctx.globalAlpha = 1.0
 
           if (scope.hasOwnProperty('agents')) {
@@ -93,6 +103,7 @@ class mapState extends State{
                console.log(scope.menuDict["automation"]["mercenaries"]["count"], scope.menuDict["automation"]["mercenaries"]["cap"])
                if (scope.menuDict["automation"]["mercenaries"]["count"] === scope.menuDict["automation"]["mercenaries"]["cap"] && window.game.state.menu.hidden === true) {
                     scope.textBoxManager.start("finalText")
+                    scope.endgame = true 
                }
           }
      }
@@ -185,7 +196,14 @@ class mapState extends State{
                scope.agents.players.whereAmI = "moving"
                scope.agents.players.pathIndex = 0
 
-               if (scope.agents.players.agents[0].status.currentHealth <= 0) {
+               var anybodyDead = false 
+               for (var i = 0; i < scope.agents.players.agents.length; i++){
+                    if (scope.agents.players.agents[i].status.currentHealth <= 0) {
+                         anybodyDead = true 
+                    }    
+               }
+
+               if (anybodyDead === true ) {
                     scope.agents.players.targetName = "Healing"
                     scope.map.target = scope.map.inn.clone()
                     this.eventKeeper.addEvent({ name: "moveReticule", timeToTrigger: 0.05, parent: "player", target: scope.map.inn.returnPosition() })
@@ -273,7 +291,9 @@ class mapState extends State{
                     this.eventKeeper.addEvent({ name: "movePlayer", timeToTrigger: 0.05, target: scope.agents.players.targetName})
                } else if (event.ArrowRight === true) {
                     delete event.ArrowRight
-                    scope.map.selectedX+=1
+                    if (scope.map.selectedX < 21) {
+                         scope.map.selectedX += 1
+                    }
                } else if (event.ArrowLeft === true) {
                     delete event.ArrowLeft
                     if (scope.map.selectedX > 0) {
@@ -286,7 +306,11 @@ class mapState extends State{
                     }
                } else if (event.ArrowDown === true) {
                     delete event.ArrowDown
-                    scope.map.selectedY+=1
+                                        
+                    if (scope.map.selectedY < 11) {
+                         scope.map.selectedY += 1
+                    }
+
                }
           }
      }

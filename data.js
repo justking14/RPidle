@@ -263,17 +263,21 @@ var map_data = {
 
 }
 
-////TO DO LIST
+//Done...i think
 //time to level up
 //menu hidden 
 //fraction health!!!
-//return to inn on auto
-//enemies too strong 
 //stronger heal 
 ///time to level up busted
 //post purchase still not triggering
 //go now once menu is closed
+//darken screen
+///except for when leveled up
 
+////TO DO LIST
+//return to inn on auto
+//enemies too strong 
+//level up affect
 
 ///shop mercenary
 ///new paths and starts (for player)

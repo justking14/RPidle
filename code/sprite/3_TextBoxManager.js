@@ -3,7 +3,7 @@ class TextBoxManager {
      constructor() {
           var width = 1280
           var defaultFont = 35
-          var txt1 = ["Welcome to the land of Slidle, a land of magic and monsters.", "Use the arrow keys to move the reticle to the group of enemies and press Enter to travel there and begin combat."]
+          var txt1 = ["Welcome to the land of Slidle, a world of magic and monsters.", "Use the arrow keys to move the reticle to the group of enemies and press Enter to travel there and begin combat."]
           var txt2 = ["You have entered battle.", "Use the arrow keys to navigate through the menu and defeat the enemy...or run away."]
           var txt3 = ["You have died.", "Thankfully that is treatable.", "Drag your tombstone to the inn to rest and once you're fully healed, return to battle."]
           var txt4 = ["Welcome to the shop!", "Here you can buy powerful abilities that will aid you on your journey."]

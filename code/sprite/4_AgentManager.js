@@ -110,12 +110,14 @@ class AgentManager {
      }
 
      levelUp(experience) {
-          for (var agent in this.agents) {
-               //only get experience if not dead
-               if (this.agents[agent].amIAvailable() === true) {
-                    this.agents[agent].levelUp(experience)
+          console.log("Earned Experience ")
+          for (let i = 0; i < this.agents.length; i++) {
+               console.log(this.agents[i].status.name, this.agents[i].amIAvailable())
+               if (this.agents[i].amIAvailable() === true) {
+                    this.agents[i].levelUp(experience)
                }
           }
+
      }
      placeChildren(size) {
           if (size === undefined) {
@@ -147,9 +149,10 @@ class AgentManager {
           var returnV = other.beDamaged(this.attacker, isWeakness || false)
           
           if (other.amIDead()) {
-               for (var i = 0; i < this.agents.length; i++){
-                    this.agents[i].levelUp(other.status.attack)
-               }
+               this.levelUp(other.status.attack)
+               //for (var i = 0; i < this.agents.length; i++){
+               //     this.agents[i].levelUp(other.status.attack)
+               //}
           }
           return returnV
      }

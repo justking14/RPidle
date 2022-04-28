@@ -54,7 +54,7 @@ class TextBox {
           ctx.fillStyle = "white"
 
           var words = this.text[this.index].split(' ');
-          console.log(words)
+          //console.log(words)
           for (var i = 0; i < this.textIndex; i++) {
                if (x + ctx.measureText(words[i] + "  ").width > 1200) {
                     x = startX
@@ -95,8 +95,17 @@ class TextBox {
           }
      }
      advanceText() {
+       
           var wordLength = this.text[this.index].split(' ').length 
           if (this.textIndex < wordLength) {
+                  var value = Math.random() * 15
+               if (value <= 5) {
+                    window.game.state.sounds["click1"].play()
+               } else if (value <= 10) {
+                    window.game.state.sounds["click2"].play()
+               } else {
+                    window.game.state.sounds["click3"].play()
+               }
                this.textIndex += 1
                this.eventKeeper.addEvent({ name: "advanceText", timeToTrigger: 0.25})
           } else {

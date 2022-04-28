@@ -44,7 +44,7 @@ class goblinManager extends AgentManager {
 
           if (this.inCombat === false && this.progressBeingTracked === true) {
                if( this.progress >= 1.0){this.progress = 1.0}
-               ctx.fillStyle = "white"
+               ctx.fillStyle = "grey"
                ctx.fillRect(this.body.pos.x, this.body.pos.y, 60, 10)
 
                ctx.fillStyle = "blue"
@@ -53,7 +53,7 @@ class goblinManager extends AgentManager {
           }
      }
      setStartPosition() {
-          console.log(this.tile)
+          //console.log(this.tile)
           this.setPositionV(this.tile.returnPosition())
           this.placeChildren()
      }

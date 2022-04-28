@@ -146,12 +146,54 @@ class AGraph {
           this.start = goal 
      }
      draw(ctx, dayValue, mercenaries) {
-         //console.log(mercenaries)
+          ctx.fillStyle = "black"
+          ctx.strokeStyle = "black"
           for (var i = 0; i < this.nodes.length; i += 1) {
                for (var j = 0; j < this.nodes[0].length; j += 1) {
 
-                    ctx.fillStyle = "white"
-                    ctx.fillRect(j * 60, i * 60, 60, 60)
+                    this.nodes[i][j].draw(ctx, dayValue)
+                                        this.nodes[i][j].draw(ctx, dayValue)
+
+                    this.nodes[i][j].selected = false 
+
+                    if (j === this.selectedX && i === this.selectedY) {
+                         this.nodes[i][j].selected = true
+                         this.target = this.nodes[i][j]
+
+                         ctx.beginPath();
+                         ctx.rect(j * 60, i * 60, 60, 60)
+                         ctx.fillStyle = "black"
+                         ctx.fill()      
+                    }
+                    for (var k = 0; k < mercenaries.length; k++){
+                         if (j === mercenaries[k].selectedVector.x && i === mercenaries[k].selectedVector.y && window.game.state.menuDict["automation"]["mercenaries"]["count"] > k) {
+                              this.nodes[i][j].selected = true
+                              mercenaries[k].target = this.nodes[i][j]
+
+                              ctx.beginPath();
+                              ctx.rect(j * 60, i * 60, 60, 60)
+                              ctx.fillStyle = "black"
+                              ctx.fill()
+                         }
+                    }
+
+                    if (j * 60 === this.inn.xCoord && i * 60 === this.inn.yCoord) {
+                         this.inn.draw(ctx)
+                    }
+                    if (j * 60 === this.store.xCoord && i * 60 === this.store.yCoord) {
+                         this.store.draw(ctx)
+                    }
+               }
+          }
+         //console.log(mercenaries)
+          /*
+          ctx.fillStyle = "black"
+          ctx.strokeStyle = "black"
+          for (var i = 0; i < this.nodes.length; i += 1) {
+               for (var j = 0; j < this.nodes[0].length; j += 1) {
+
+                    //ctx.fillStyle = "white"
+                    //ctx.fillRect(j * 60, i * 60, 60, 60)
 
                     this.nodes[i][j].draw(ctx, dayValue)
                     this.nodes[i][j].selected = false 
@@ -159,14 +201,16 @@ class AGraph {
                     if (j === this.selectedX && i === this.selectedY) {
                          ctx.beginPath();
                          ctx.rect(j * 60, i * 60, 60, 60)
-                         ctx.stroke();
+                         ctx.fill()
+                         //ctx.strokeRect(j * 60, i * 60, 60, 60)
                     }
-
+                    ctx.fillStyle = "black"
+                    ctx.strokeStyle = "black"
                     for (var k = 0; k < mercenaries.length; k++){
                          if (j === mercenaries[k].selectedVector.x && i === mercenaries[k].selectedVector.y && window.game.state.menuDict["automation"]["mercenaries"]["count"] > k) {
                               ctx.beginPath();
                               ctx.rect(j * 60, i * 60, 60, 60)
-                              ctx.stroke();
+                              ctx.fill()
                          }
                     }
                }
@@ -181,6 +225,8 @@ class AGraph {
                     if (j * 60 === this.store.xCoord && i * 60 === this.store.yCoord) {
                          this.store.draw(ctx)
                     }
+                    ctx.fillStyle = "black"
+                    ctx.strokeStyle = "black"
 
                     if (j === this.selectedX && i === this.selectedY) {
                          this.nodes[i][j].selected = true
@@ -188,8 +234,7 @@ class AGraph {
 
                          ctx.beginPath();
                          ctx.rect(j * 60, i * 60, 60, 60)
-                         ctx.stroke();
-                    }
+                         ctx.fill()                    }
 
                     for (var k = 0; k < mercenaries.length; k++){
                          //console.log(k, window.game.state.menuDict["automation"]["mercenaries"])
@@ -199,11 +244,12 @@ class AGraph {
 
                               ctx.beginPath();
                               ctx.rect(j * 60, i * 60, 60, 60)
-                              ctx.stroke();
+                              ctx.fill()
                          }
                     }
                }
-          }         
+          } 
+          */
      }
      reset() {
           //this.nodes = [], this.open = [], this.closed = []
@@ -342,6 +388,9 @@ class Tile {
           if (this.selected === false) {
                if (this.name === "path" || this.name === "grass") {
 
+
+                    //console.log("Fruit ", this.sprite.getPosition())
+                    ctx.fillRect(this.sprite.getPosition().x, this.sprite.getPosition().y, 60, 60)
 
                     if (dayValue <= 1) {
                          ctx.globalAlpha = 1.0 - dayValue

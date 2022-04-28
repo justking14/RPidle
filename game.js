@@ -62,6 +62,7 @@ function Game(w, h, targetFps, skipTitle) {
      this.state.menu = new menuState()
 
      this.state.gold = 0;
+     this.state.day = 1;
      this.state.timeLeft = new Time(Math.floor(Date.now() / 1000),5)
 
      this.state.context = this.context
@@ -69,7 +70,10 @@ function Game(w, h, targetFps, skipTitle) {
      this.state.pastTitle = false
      this.state.titleImage = document.getElementById('title')
 
-     this.state.sounds = {playerHurt: new Sound("audio/hit1.wav"), enemyHurt: new Sound("audio/hit2.wav")}
+     this.state.sounds = {
+          playerHurt: new Sound("audio/hit1.wav"), enemyHurt: new Sound("audio/hit2.wav"), death: new Sound("audio/explosion.wav"), levelUp: new Sound("audio/levelUp.wav"),
+          click1: new Sound("audio/blip1.wav"), click2: new Sound("audio/blip2.wav"), click3: new Sound("audio/blip3.wav")
+     }
 
      this.viewport = generateCanvas(w, h);
      this.state.context = this.viewport.getContext('2d');
@@ -88,6 +92,11 @@ function Game(w, h, targetFps, skipTitle) {
      
      this.state.eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
      this.state.eventKeeper.addEvent({ name: "time", timeToTrigger: 0.5 })
+
+     this.state.levelledUp = false 
+     this.state.levelledUpTime = (Date.now()/1000) - 100
+     this.state.endgame = false  
+     this.state.darkCount = 0
 
 
 
@@ -125,7 +134,15 @@ function dealWithEvent(event){
           window.game.state.timeLeft.update()
           //console.log(window.game.state.timeLeft)
           window.game.state.eventKeeper.addEvent({ name: "time", timeToTrigger: 1.0 })
+          if (window.game.state.endgame === true) {
+               window.game.state.darkCount += 10
+          }
 
+          if (window.game.state.levelledUp === true) {
+               window.game.state.levelledUp = false 
+               window.game.state.levelledUpTime = Date.now()/1000
+
+          }
      }
 }
 
@@ -147,36 +164,39 @@ function gameUpdate(scope) {
           }
           //disable key presses when textbox is up
           if (state.textBoxManager.activelyTyping === false) {
-               if (keysPressed.p === true || keysPressed.P === true) {
-                    delete keysPressed.p
-                    delete keysPressed.P
+               if (state.endgame === false) {
+                    if (keysPressed.p === true || keysPressed.P === true) {
+                         delete keysPressed.p
+                         delete keysPressed.P
 
-                    console.log(state.menuDict)
-                    for (const property in state.menuDict["automation"]) {
-                         console.log("PROPERTY ", property)
-                         state.menuDict["automation"][property]["unlocked"] = true 
-                    }
+                         console.log(state.menuDict)
+                         for (const property in state.menuDict["automation"]) {
+                              console.log("PROPERTY ", property)
+                              state.menuDict["automation"][property]["unlocked"] = true
+                         }
                                         
-                    //state.menuDict["automation"]["mercenaries"]["count"] = 50 //state.menuDict["automation"]["mercenaries"]["cap"]
+                         //state.menuDict["automation"]["mercenaries"]["count"] = 50 //state.menuDict["automation"]["mercenaries"]["cap"]
 
-                    state.menuDict["automation"]["mercenaries"]["maxCount"] = 50 //state.menuDict["automation"]["mercenaries"]["cap"]
-                    console.log("Auto cheat activated/deactivated")
-               }
-               if (keysPressed.m === true || keysPressed.M === true) {
-                    if (state.worldStateManager.currentState.name === "map" || state.worldStateManager.currentState.name === "store") {
-                         delete keysPressed.m
-                         delete keysPressed.M
-                         state.menu.onEnter(state)
-                         state.menu.hidden = !state.menu.hidden
+                         state.menuDict["automation"]["mercenaries"]["maxCount"] = 50 //state.menuDict["automation"]["mercenaries"]["cap"]
+                         console.log("Auto cheat activated/deactivated")
+                    }
+                    if (keysPressed.m === true || keysPressed.M === true) {
+                         //if (state.worldStateManager.currentState.name === "map" || state.worldStateManager.currentState.name === "store") {
+                              delete keysPressed.m
+                              delete keysPressed.M
+                              state.menu.onEnter(state)
+                              state.menu.hidden = !state.menu.hidden
+                         //}
+                    }
+                    if (keysPressed.g === true || keysPressed.G === true) {
+                         state.gold = 100
+                    }
+                    if (state.menu.hidden === false) {
+                         state.menu.dealWithInteraction(state, keysPressed)
+                    } else {
+                         state.worldStateManager.currentState.dealWithInteraction(state, keysPressed)
                     }
                }
-               if (keysPressed.g === true || keysPressed.G === true) {
-                    state.gold = 100
-               }
-               if (state.menu.hidden === false) {
-                    state.menu.dealWithInteraction(state, keysPressed)
-               }
-               state.worldStateManager.currentState.dealWithInteraction(state, keysPressed)
           } else {
                if (keysPressed.Enter) {
                     keysPressed = {}
@@ -196,16 +216,13 @@ function gameRender(scope) {
           if (scope.state.pastTitle === true) {
                var ctx = scope.state.context
                ctx.clearRect(0, 0, w, h);
+               ctx.fillStyle = 'black';
+
                ctx.fillRect(0,0,w,h)
 
                // Spit out some text
                ctx.font = '32px Adventure';
-               ctx.fillStyle = '#fff';
-               //scope.context.fillText('It\'s dangerous to travel this route alone.', 5, 50);
-               if (scope.constants.showFps) {
-                    ctx.fillStyle = '#ff0';
-                    ctx.fillText(scope.loop.fps, w - 100, 50);
-               }
+               
                scope.state.worldStateManager.draw(ctx, scope.state)
                
                if(scope.state.menu.hidden === false){
@@ -213,7 +230,15 @@ function gameRender(scope) {
                }
                scope.state.textBoxManager.draw(scope.state.context)
 
-               filterStuff(scope.state.menuDict["Visuals"]["colorFilter"], scope.state.context.getImageData(0, 0, scope.constants.width, scope.constants.height), scope)
+                              
+               filterStuff(14, scope.state.context.getImageData(0, 0, scope.constants.width, scope.constants.height), scope)
+
+               if (window.game.state.levelledUpTime + 5 > (Date.now() / 1000)) {
+                  ctx.font = '50px Adventure';
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText("YOU LEVELED UP ", 275, 768/2, 1024)
+               }
+               //filterStuff(scope.state.menuDict["Visuals"]["colorFilter"], scope.state.context.getImageData(0, 0, scope.constants.width, scope.constants.height), scope)
                
           } else {
                
@@ -320,7 +345,20 @@ document.addEventListener('keyup', (event) => {
      delete keysPressed[event.key];
 });
 
-function filterStuff(filter, imgData, scope){
+function filterStuff(filter, imgData, scope) {
+     if (filter === 14) {
+          for (i = 0; i < imgData.data.length; i += 4) {
+
+               let count = imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2];
+               if(count < 720){
+                    imgData.data[i] = imgData.data[i] - window.game.state.darkCount
+                    imgData.data[i + 1] = imgData.data[i + 1] - window.game.state.darkCount
+                    imgData.data[i + 2] = imgData.data[i + 2] - window.game.state.darkCount
+               }
+               imgData.data[i + 3] = 255;
+          }
+          
+     }
      if (filter === 4) {
           for (i = 0; i < imgData.data.length; i += 4) {
                let count = imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2];
@@ -396,11 +434,11 @@ function waterfall(){
 
      
      var bgImg = new Image()
-     bgImg.src = "images/bgTitle.png"
+     bgImg.src = "images/bgTile2.png"
      ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height)
 
           let particleArray = []
-          const numOfParticles = 30000
+          const numOfParticles = 35000
           var dead = false 
 
           let mappedImage = []
@@ -430,11 +468,11 @@ function waterfall(){
 
           class Particle {
                constructor() {
-                    this.x = clamp(Math.random() * canvas.width, 350, 915)
+                    this.x = clamp(Math.random() * canvas.width, 340, 930)
                     this.y = clamp(Math.random() * canvas.height, 150, canvas.height)// Math.random() * canvas.height/3;
                     this.speed = 0;
                     this.velocity = Math.random() * 1.75;
-                    this.size = Math.random() * 15 + 5
+                    this.size = 10 //Math.random() * 15 + 5
                     this.position1 = Math.floor(this.y)
                     this.position2 = Math.floor(this.x)
                }
@@ -447,7 +485,7 @@ function waterfall(){
                     this.y += movement//this.velocity
                     if (this.y >= canvas.height) {
                          this.y = 150;
-                         this.x = clamp(Math.random() * canvas.width, 350, 915)
+                         this.x = clamp(Math.random() * canvas.width, 340, 930)
                     }
                }
                draw(color) {
@@ -457,7 +495,7 @@ function waterfall(){
           }
           function init() {
                for (let i = 0; i < numOfParticles; i++) {
-                    let size = Math.random() * 40 + 10
+                    let size = Math.random() * 80 + 10
                     let x = 1024/2
                     let y = 768
                     particleArray.push(new Particle())
@@ -466,13 +504,11 @@ function waterfall(){
           init()
           function animate() {
                if (state.pastTitle === false) {
-                         
-
-
-                    ctx.globalAlpha = 0.05;
-
-                    ctx.fillStyle = 'rgb(0,0,0)';
+                                   
+                    var color = createGradient(ctx, new Body(0,0,canvas.width, canvas.height), [[0, "orange"], [1.0, colorRed.stringify()]]) 
+                    ctx.fillStyle = color
                     ctx.fillRect(0, 0, canvas.width, canvas.height)
+
                     ctx.globalAlpha = 1.0
 
                     ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height)
@@ -480,8 +516,8 @@ function waterfall(){
 
                     for (let i = 0; i < particleArray.length; i++) {
                          particleArray[i].update()
-                         ctx.globalAlpha = (particleArray[i].speed * 0.35) + 0.075
-                         particleArray[i].draw('rgb(' + (particleArray[i].speed * 40 )+ ', ' + (particleArray[i].speed * 20) + ',255)')  
+                         ctx.globalAlpha = (particleArray[i].speed * 0.35) + 0.275
+                         particleArray[i].draw('rgb(' + (50 + particleArray[i].speed * 40 )+ ', ' + (50 + particleArray[i].speed * 60) + ',255)')  
                          if (particleArray[i].size <= 1) {
                               particleArray.splice(i, 1)
                               i--

@@ -30,6 +30,7 @@ class playerManager extends AgentManager {
           this.magicAttack = new MagicSpell()
                     
           this.eventKeeper = new GameClock(Math.floor(Date.now() / 1000), 0)
+          this.levelledUp = false 
      }
 
      getTarget() {

@@ -74,14 +74,14 @@ class combatState extends State {
           if (this.battleState.innerState === "playerChoose" || this.battleState.innerState === "playerPicked") {
                scope.agents.players.setAttacker()
                var attacker = scope.agents.players.attacker
-               console.log(attacker)
+               //console.log(attacker)
                if (attacker !== null) {
                     ctx.fillColor = "black"
                     ctx.fillStyle = "black"
                     ctx.strokeStyle = "black"
 
                     var sprites = attacker.biggerSprite.body.pos
-                    console.log(sprites)
+                    //console.log(sprites)
                     ctx.beginPath();
                     ctx.rect(sprites.x, sprites.y, 80, 80)
                     ctx.stroke();
@@ -224,7 +224,7 @@ class combatState extends State {
           }
      }
      playerDoDamage(scope, event) {
-          console.log(event)
+          //console.log(event)
           event.source.midLerp = false 
           this.battleState.magicUI.hidden = true
 
@@ -334,6 +334,7 @@ class combatState extends State {
                this.magicAttackStep3(scope)
 
           } else if (event.name === "leaveBattle") {
+               scope.day+=1
                scope.worldStateManager.transition(scope, "map")  
 
           } else if (event.name === "shake") {
